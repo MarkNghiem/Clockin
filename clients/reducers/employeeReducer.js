@@ -1,64 +1,54 @@
 import * as types from '../constants/employeeActionTypes';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-const employee = {
-  employeeId: 0,
-  name: '',
-  company: '',
-  title: '',
-  employeeStatus: '',
-  wage: 0,
-  currentPeriod: '11/01/2024 - 11/14/2024',
-  totalHrs: 0
-}
+const SERVER_URL = 'http://localhost:3000';
 
-const employeeReducer = (state = employee, action) => {
-  switch (action.type) {
-    case types.ADD_EMPLOYEE:
-      return {
-			...state,
-			// employeeId: action.payload.id,
-			name: action.payload,
-			// company: action.payload.company,
-			// title: action.payload.title,
-			// employeeStatus: action.payload.status,
-			// wage: action.payload.wage,
-			// currentPeriod: action.payload.period,
-			// totalHrs: action.payload.totalHrs,
-		};
+export const fetchEmployee = createAsyncThunk('fetchEmployee', async () => {
+	try {
+		const response = await fetch(SERVER_URL + '/api')
+		const data = await response.json();
+		return data;
+	} catch(err) {
+		console.error(`Error Occurred while fetching data: ${err}`);
+		alert('Unable to retrieve data from the server');
+	}
+});
 
-    case types.FIND_EMPLOYEE:
-      return {
-			...state,
-			employeeId: action.payload.id,
-			name: action.payload.name,
-			company: action.payload.company,
-			title: action.payload.title,
-			employeeStatus: action.payload.status,
-			wage: action.payload.wage,
-			totalHrs: action.payload.totalHrs,
-		};
+const employeeSlice = createSlice({
+	name: 'employee',
+	initialState: {
+		isLoading: false,
+		data: [],
+		error: false
+	},
 
-    case types.UPDATE_EMPLOYEE:
-      return {
-			...state,
-			name: action.payload,
-		};
+	reducers: {
+		addEmployee(state, action) {
+			state.data.push(action.payload)
+		},
 
-    case types.DELETE_EMPLOYEE:
-      return {
-			...state,
-			employeeId: action.payload.id,
-			name: action.payload.name,
-			company: action.payload.company,
-			title: action.payload.title,
-			employeeStatus: action.payload.status,
-			wage: action.payload.wage,
-			totalHrs: action.payload.totalHrs,
-		};
+		findEmployee(state, action) {
+			return state.data[action.payload]
+		}
 
-    default:
-      return state;
-  }
-};
 
-export default employeeReducer;
+	},
+
+	extraReducers: (builder) => {
+		builder.addCase(fetchEmployee.pending, (state, action) => {
+			state.isLoading = true
+		})
+
+		builder.addCase(fetchEmployee.fulfilled, (state, action) => {
+			state.isLoading = false;
+			state.data = action.payload
+		})
+
+		builder.addCase(fetchEmployee.rejected, (state, action) => {
+			state.error = true;
+		})
+	}
+});
+
+export const { addEmployee } = employeeSlice.actions 
+export default employeeSlice.reducer;

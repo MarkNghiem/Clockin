@@ -2,7 +2,15 @@ import * as types from '../constants/employeeActionTypes';
 
 export const addEmployee = data => ({
   type: types.ADD_EMPLOYEE,
-  payload: data
+  payload: {
+    _id: data._id,
+    name: data.name,
+    title: data.title,
+    status: data.status,
+    wage: data.wage,
+    total_hrs: data.total_hrs,
+    company: data.company
+  }
 });
 
 export const findEmployee = data => ({

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PeriodDisplay = ({ currentPeriod, totalHrs }) => {
+const PeriodDisplay = ({ currentPeriod, total_hrs }) => {
 	return (
 		<div id='periodDisplay'>
 			<ul id='periodDisplayList'>
@@ -10,7 +10,7 @@ const PeriodDisplay = ({ currentPeriod, totalHrs }) => {
 				</li>
 				<li id='periodDisplayListItem'>
 					<strong>Current Total Hours: </strong>
-					{totalHrs}
+					{total_hrs}
 				</li>
 			</ul>
 		</div>

@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cors());
 
 // Route Handlers
-app.use('/api', apiRouter);
+app.use('/api', cors(), apiRouter);
 
 app.get('/', cors(), (_req, res) => {
   res.status(200).json('Hello World');

@@ -4,17 +4,14 @@ import { useSelector } from 'react-redux';
 import OrgDisplay from '../components/OrgDisplay.jsx';
 import EmployeeDisplay from '../components/EmployeeDisplay.jsx';
 
-const DetailContainer = ({ company, employeeId, name, title, wage }) => {
+const DetailContainer = ({ company, employees}) => {
   return (
     <div id='detailContainer'>
       <OrgDisplay 
         company={company}
       />
       <EmployeeDisplay 
-        employeeId={employeeId}
-        name={name}
-        title={title}
-        wage={wage}
+        employees={employees}
       />
     </div>
   )

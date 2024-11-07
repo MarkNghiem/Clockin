@@ -1,34 +1,97 @@
 import React, { useState } from 'react';
-import * as actions from '../actions/employeeActions';
-import { useDispatch, useSelector } from 'react-redux';
+import { addEmployee } from '../reducers/employeeReducer';
+import { useDispatch } from 'react-redux';
+
+const SERVER_URL = 'http://localhost:3000';
 
 export const AddPopUp = ({ addPopUp, setAddPopUp }) => {
-	const dispatch = useDispatch();
-	const name = useSelector((state) => state.employee.name);
-  console.log(name);
+	// const dispatch = useDispatch();
 
-	const handleChange = (event) => {
-		console.log('handleChange Event: ', event);
-		dispatch(actions.updateEmployee(event.target.value));
+	const initialValues = {
+		name: '',
+		title: '',
+		status: '',
+		wage: '',
+		total_hrs: '0.00',
+		company: 'FTRI-51',
 	};
-	const handleAdd = (event) => {
-		console.log('handleAdd event: ', event);
-		event.preventDefault();
-		console.log(name);
-		dispatch(actions.addEmployee(name));
+
+	const [val, setVal] = useState(initialValues);
+
+	const handleInputChange = (e) => {
+		const { name, value } = e.target;
+		console.log(value);
+		setVal({
+			...val,
+			[name]: value,
+		});
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+
+		try {
+			const response = await fetch(SERVER_URL + '/api/employee', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(val),
+			});
+
+			// Read response body once
+			const data = await response.json();
+			if (!response.ok) {
+				// Log error details if the response status is not OK
+				throw new Error(
+					`Server responded with status ${
+						response.status
+					}: ${JSON.stringify(data)}`
+				);
+			}
+
+			console.log(data); // Log successful response data
+			// dispatch(addEmployee(state, data));
+		} catch (err) {
+			console.error(
+				`Error occurred while adding new employee: ${err.message}`
+			);
+		}
 	};
 
 	return addPopUp ? (
 		<div id='AddContainer'>
 			<div id='AddDisplay'>
 				<h4>Add New Employee</h4>
-				<form onSubmit={handleAdd}>
+				<form onSubmit={handleSubmit}>
 					<label htmlFor='addEmployee'>Add New Employee</label>
 					<input
-            onChange={handleChange}
-						value={name}
-            name='addEmployee'
-            type='text'
+						value={val.name}
+						onChange={handleInputChange}
+						name='name'
+						label='Name'
+						placeholder='Enter Your Name'
+					/>
+					<input
+						value={val.title}
+						onChange={handleInputChange}
+						name='title'
+						label='Title'
+						placeholder='Enter Your Title'
+					/>
+					<input
+						value={val.status}
+						onChange={handleInputChange}
+						name='status'
+						label='Status'
+						placeholder='Full-time or Part-time'
+					/>
+					<input
+						value={val.wage}
+						onChange={handleInputChange}
+						name='wage'
+						label='Wage'
+						placeholder='Enter Starting Wage'
 					/>
 					<button
 						id='addEmployee'
@@ -46,7 +109,7 @@ export const AddPopUp = ({ addPopUp, setAddPopUp }) => {
 			</div>
 		</div>
 	) : (
-		' '
+		''
 	);
 };
 
@@ -87,6 +150,8 @@ export const UpdatePopUp = ({ updatePopUp, setUpdatePopUp }) => {
 };
 
 export const DeletePopUp = ({ deletePopUp, setDeletePopUp }) => {
+
+
 	return deletePopUp ? (
 		<div id='AddContainer'>
 			<div id='AddDisplay'>

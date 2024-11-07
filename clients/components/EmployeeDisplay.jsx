@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const EmployeeDisplay = () => {
+
+
+const EmployeeDisplay = ({ employees }) => {
   return (
     <div id='employeeDisplay'>
       <table id='employeesTable'>
@@ -13,7 +15,14 @@ const EmployeeDisplay = () => {
           </tr>
         </thead>
         <tbody>
-          
+          {employees.map(person => (
+            <tr key={person._id}>
+              <td>{person._id}</td>
+              <td>{person.name}</td>
+              <td>{person.title}</td>
+              <td>{person.wage}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
