@@ -1,2 +1,0 @@
-7379454242164353867454
-postgresql://postgres.hjjjaisbkxmousioisza:7379454242164353867454@aws-0-us-west-1.pooler.supabase.com:6543/postgres
