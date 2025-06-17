@@ -1,0 +1,12 @@
+{
+	"name": "clockin",
+  "description": "Management Made Easy",
+	"private": true,
+	"version": "2.0.0",
+	"license": "MIT",
+	"author": {
+		"name": "Mark Nghiem",
+		"email": "mark.kietnghiem@gmail.com",
+		"url": "https://www.marknghiem.me"
+	}
+}
