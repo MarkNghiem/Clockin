@@ -1,13 +1,12 @@
 import express, { type Request, type Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { createClient } from '@supabase/supabase-js';
 
-// Config for env mode
-dotenv.config();
+// Import from other files
+import connectDB from './db/db.js';
+import { config } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,27 +20,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Config for DB
-const supabaseURL = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
-
-if (!supabaseURL || !supabaseKey) {
-	console.error('🔴 Database URL and Key are not set.');
-	throw new Error('🔴 Missing Database Credentials.');
-}
-
-try {
-	createClient(supabaseURL, supabaseKey);
-	console.log('✅ Successfully Established Connection to the Database.');
-} catch (error) {
-	console.error(`🔴 Unable to connect to the Database: ${error}.`);
-}
+connectDB();
 
 // Connect to port 3000
 const PORT = 3000;
 
 const server = app.listen(PORT, () => {
-	console.log(`✅ Server is running on PORT ${PORT}.`);
-	console.log(`🔵 Mode: ${process.env.NODE_ENV}.`);
+	try {
+		const checked = config.checkData(config.MODE);
+		if (checked[0]) {
+			console.log(`✅ Server is running on PORT ${PORT}.`);
+			console.log(`🔵 Mode: ${checked[0]}.`);
+		} else {
+			console.warn(`🟡 Server is running but no environment found.`);
+		}
+	} catch (error) {
+		console.error(error);
+		throw new Error("Unable to connect to the server.");
+	}
 });
 
 // Serving static files

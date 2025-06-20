@@ -1,6 +1,6 @@
 {
 	"name": "clockin",
-  "description": "Management Made Easy",
+	"description": "Management Made Easy",
 	"private": true,
 	"version": "2.0.0",
 	"license": "MIT",
