@@ -30,6 +30,6 @@
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
   },
-  "include": ["src"],
+  "include": ["src", "tests"],
   "exclude": ["node_modules", "server/**/*.ts", "dist"]
 }

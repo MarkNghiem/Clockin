@@ -9,7 +9,8 @@
 		"build:front": "vite build",
 		"build:back": "npx tsc -b tsconfig.node.json",
 		"prod": "vite preview",
-		"lint": "eslint ."
+		"lint": "eslint .",
+		"test": "jest"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.14.0",
@@ -33,6 +34,7 @@
 		"@types/cookie-parser": "^1.4.9",
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.3",
+		"@types/jest": "^30.0.0",
 		"@types/pg": "^8.15.4",
 		"@types/react": "^19.1.8",
 		"@types/react-dom": "^19.1.6",
@@ -50,9 +52,11 @@
 		"puppeteer": "^24.10.2",
 		"supertest": "^7.1.1",
 		"tailwindcss": "^4.1.10",
+		"ts-jest": "^29.4.0",
 		"ts-node": "^10.9.2",
 		"typescript": "~5.8.3",
 		"typescript-eslint": "^8.30.1",
-		"vite": "^6.3.5"
+		"vite": "^6.3.5",
+		"vitest": "^3.2.4"
 	}
 }

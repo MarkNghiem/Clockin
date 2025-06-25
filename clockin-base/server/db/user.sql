@@ -27,7 +27,7 @@ CREATE TABLE public.companies (
   company_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   company_name TEXT NOT NULL,
   occupational_field TEXT NOT NULL,
-  owner_id UUID REFERENCES public.users user_id,
+  owner_id UUID REFERENCES public.users (user_id) NOT NULL,
   address_1 TEXT NOT NULL,
   address_2 TEXT NOT NULL,
   address_city TEXT NOT NULL,
@@ -67,12 +67,15 @@ CREATE TABLE public.employees_in_company (
 - Trigger when the user update their info
 */
 CREATE OR REPLACE FUNCTION public.update_updated_at_column ()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql STABLE
+SET search_path TO public
+AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql STABLE;
+$$;
 
 CREATE TRIGGER set_update_at_users
 BEFORE UPDATE ON public.users
@@ -90,14 +93,17 @@ FOR EACH ROW
 EXECUTE FUNCTION public.update_updated_at_column();
 
 CREATE FUNCTION public.is_admin()
-RETURNS boolean AS $$
+RETURNS boolean
+LANGUAGE plpgsql STABLE
+SET search_path TO public 
+AS $$
 BEGIN
   RETURN EXISTS (
     SELECT 1 FROM public.users
     WHERE auth.uid() = user_id AND user_role = 'admin'
   );
 END;
-$$ LANGUAGE plpgsql STABLE;
+$$;
 
 -- Revoke all permissions from anon and authenticated
 REVOKE ALL ON public.users FROM anon, authenticated;
@@ -114,38 +120,38 @@ ALTER TABLE public.companies_in_user ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.employees_in_company ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
-CREATE POLICY "Full access for admins and data owners on Users table"
+CREATE POLICY "Full access for admins and data owners on Users"
 ON public.users
 FOR ALL
-USING (auth.uid() = user_id OR is_admin())
-WITH CHECK (auth.uid() = user_id OR is_admin());
+USING ((SELECT auth.uid()) = user_id OR is_admin())
+WITH CHECK ((SELECT auth.uid()) = user_id OR is_admin());
 
-CREATE POLICY "Full access for admins and data owners on Companies table"
+CREATE POLICY "Full access for admins and data owners on Companies"
 ON public.companies
 FOR ALL
-USING (auth.uid() = owner_id OR is_admin())
-WITH CHECK (auth.uid() = owner_id OR is_admin());
+USING ((SELECT auth.uid()) = owner_id OR is_admin())
+WITH CHECK ((SELECT auth.uid()) = owner_id OR is_admin());
 
-CREATE POLICY "Full access for admins and data owners on Employees table"
+CREATE POLICY "Full access for admins and data owners on Employees"
 ON public.employees
 FOR ALL
-USING (auth.uid() = user_id OR is_admin())
-WITH CHECK (auth.uid() = user_id OR is_admin());
+USING ((SELECT auth.uid()) = user_id OR is_admin())
+WITH CHECK ((SELECT auth.uid()) = user_id OR is_admin());
 
-CREATE POLICY "Full access for admins and data owners on Companies In User table"
+CREATE POLICY "Full access for admins and data owners on Companies In User"
 ON public.companies_in_user
 FOR ALL
-USING (auth.uid() = user_id OR is_admin())
-WITH CHECK (auth.uid() = user_id OR is_admin());
+USING ((SELECT auth.uid()) = user_id OR is_admin())
+WITH CHECK ((SELECT auth.uid()) = user_id OR is_admin());
 
-CREATE POLICY "Full access for admins and data owners on Employees In Company table"
+CREATE POLICY "Full access for admins and data owners on Employees In Company"
 ON public.employees_in_company
 FOR ALL
 USING (
   EXISTS (
     SELECT 1 FROM public.employees e
     WHERE e.employee_id = employees_in_company.employee_id
-    AND auth.uid() = e.user_id
+    AND (SELECT auth.uid()) = e.user_id
     OR is_admin()
   )
 )
@@ -153,7 +159,7 @@ WITH CHECK (
   EXISTS (
     SELECT 1 FROM public.employees e
     WHERE e.employee_id = employees_in_company.employee_id
-    AND auth.uid() = e.user_id
+    AND (SELECT auth.uid()) = e.user_id
     OR is_admin()
   )
 );

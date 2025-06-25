@@ -7,7 +7,7 @@ This markdown contains info of API Endpoints of Clockin'
 `https://localhost:3000/`
 
 ## List of Endpoints
-- [GET /welcome](#get-welcome) 
+- [GET /](#get) 
 - [GET /welcome/:uid](#get-welcomeuid)
 - [GET /:uid](#get-uid)
 - [GET /:uid-cid](#get-uid-cid)
@@ -29,7 +29,7 @@ This markdown contains info of API Endpoints of Clockin'
 > - Response:
 > - Response Codes:
 
-## *GET /welcome*
+## *GET*
 - Request Parameters: `n/a`
 - Request Option: `n/a`
 - Request Header:
