@@ -27,8 +27,8 @@ ALTER TABLE public.test_table ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Full access for admins and data owners on Test"
 ON public.test_table
 FOR ALL
-USING ((SELECT auth.uid() = id) OR is_admin())
-WITH CHECK((SELECT auth.uid() = id) OR is_admin());
+USING ((SELECT auth.uid()) = id OR is_admin())
+WITH CHECK((SELECT auth.uid()) = id OR is_admin());
 
 INSERT INTO public.test_table (text_not_null, number_not_null, salary)
 VALUES ('hi', 123, 67.89);
