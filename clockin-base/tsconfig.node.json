@@ -5,30 +5,25 @@
 		"lib": ["ES2023"],
 		"module": "ESNext",
 		"skipLibCheck": true,
-
-		/* Bundler mode */
 		"moduleResolution": "node",
 		"isolatedModules": true,
 		"verbatimModuleSyntax": true,
 		"moduleDetection": "force",
-
-		/* Linting */
 		"strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"erasableSyntaxOnly": true,
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true,
-
 		"outDir": "./dist/server/",
 		"rootDir": "./server/",
 		"esModuleInterop": true,
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
-		"forceConsistentCasingInFileNames": true,
+		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["server/**/*.ts"],
-	"exclude": ["node_modules", "src/**/*.ts"],
+	"include": ["server/**/*.ts", "server/tests/integration/server.test.ts"],
+	"exclude": ["node_modules", "app/**/*.ts", "dist"],
 	"ts-node": {
 		"esm": true
 	}

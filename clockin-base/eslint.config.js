@@ -6,7 +6,7 @@ import tseslint, { config } from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default tseslint.config(
-	{ ignores: ['dist'] },
+	{ ignores: ['dist', 'jest.config.ts', 'vite.config.ts'] },
 	{
 		extends: [
 			js.configs.recommended,
@@ -21,7 +21,11 @@ export default tseslint.config(
 				...globals.jest,
 			},
 			parserOptions: {
-				project: ['./tsconfig.node.json', './tsconfig.app.json'],
+				project: [
+					'./tsconfig.node.json',
+					'./tsconfig.app.json',
+					'./tsconfig.test.json',
+				],
 				tsconfigRootDir: import.meta.dirname,
 			},
 		},

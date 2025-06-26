@@ -1,15 +1,11 @@
 import express, { type Request, type Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import path from 'path';
 
 // Import from other files
-import connectDB from './db/db.js';
-import { config } from './config.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import connectDB from './db/db';
+import { currentDir, config } from './config';
 
 const app = express();
 
@@ -41,11 +37,11 @@ const server = app.listen(PORT, () => {
 });
 
 // Serving static files
-app.use(express.static(path.resolve(__dirname, '../src/')));
+app.use(express.static(path.resolve(currentDir, '../src/')));
 
 // Default endpoints
 app.get('/p1', (_req, res) => {
-	res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+	res.status(200).sendFile(path.resolve(currentDir, '../index.html'));
 });
 
 app.use((_req, res) => {
@@ -68,12 +64,12 @@ app.use((err: Error, _req: Request, res: Response) => {
 // Gracefully shutting down
 let isShuttingDown = false;
 
-const gracefullyShutDown = async () => {
+export const gracefullyShutDown = async () => {
 	if (isShuttingDown) return;
 	isShuttingDown = true;
-	console.log('🔵 Shut down signal received. Gracefully shutting down...');
-
+	
 	try {
+		console.log('🔵 Shut down signal received. Gracefully shutting down...');
 		await new Promise<void>((resolve, reject) => {
 			server.close((err) => {
 				if (err) reject(err);
@@ -92,3 +88,5 @@ const gracefullyShutDown = async () => {
 // Shutdown signals
 process.on('SIGINT', gracefullyShutDown);
 process.on('SIGTERM', gracefullyShutDown);
+
+export default app;

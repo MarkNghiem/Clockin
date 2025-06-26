@@ -7,10 +7,10 @@
 		"dev": "vite",
 		"server": "nodemon",
 		"build:front": "vite build",
-		"build:back": "npx tsc -b tsconfig.node.json",
+		"build:back": "tsc -p tsconfig.node.json && tsc-esm-fix dist/server --tsconfig tsconfig.node.json",
 		"prod": "vite preview",
 		"lint": "eslint .",
-		"test": "jest"
+		"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.14.0",
@@ -19,12 +19,14 @@
 		"@supabase/supabase-js": "^2.50.0",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
+		"country-codes-list": "^2.0.0",
 		"dotenv": "^16.5.0",
 		"express": "^5.1.0",
 		"openai": "^5.5.1",
 		"passport": "^0.7.0",
 		"react": "^19.1.0",
-		"react-dom": "^19.1.0"
+		"react-dom": "^19.1.0",
+		"usa-states": "^0.0.6"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.25.0",
@@ -38,6 +40,7 @@
 		"@types/pg": "^8.15.4",
 		"@types/react": "^19.1.8",
 		"@types/react-dom": "^19.1.6",
+		"@types/supertest": "^6.0.3",
 		"@vitejs/plugin-react": "^4.4.1",
 		"autoprefixer": "^10.4.21",
 		"eslint": "^9.25.0",
@@ -54,6 +57,7 @@
 		"tailwindcss": "^4.1.10",
 		"ts-jest": "^29.4.0",
 		"ts-node": "^10.9.2",
+		"tsc-esm-fix": "^3.1.2",
 		"typescript": "~5.8.3",
 		"typescript-eslint": "^8.30.1",
 		"vite": "^6.3.5",

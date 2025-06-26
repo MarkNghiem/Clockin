@@ -45,7 +45,8 @@ CREATE TABLE public.employees (
   user_id UUID REFERENCES public.users (user_id),
   company_id UUID REFERENCES public.companies (company_id),
   title TEXT NOT NULL,
-  wage TEXT NOT NULL,
+  wage NUMERIC(10, 2) NOT NULL,
+  wage_frequency TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );

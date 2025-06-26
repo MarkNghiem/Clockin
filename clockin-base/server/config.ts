@@ -1,6 +1,11 @@
 import dotenv from 'dotenv';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
+
+const currentFile = fileURLToPath(import.meta.url);
+export const currentDir = dirname(currentFile);
 
 export const config = {
 	MODE: process.env.NODE_ENV,
@@ -27,3 +32,5 @@ export const config = {
 		return checked;
 	},
 };
+
+
