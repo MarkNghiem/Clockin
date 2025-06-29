@@ -1,5 +1,7 @@
 import request from 'supertest';
+
 import app, { gracefullyShutDown } from '../../server';
+import { supabaseAdmin } from '../../server';
 
 describe('Server Connection and Database Connection Integration Test', () => {
 	afterAll(async () => {
@@ -13,6 +15,10 @@ describe('Server Connection and Database Connection Integration Test', () => {
 			expect(res.status).toBe(200);
 			expect(res.type).toMatch(/html/);
 			expect(res.text).toContain('<!doctype html>');
+		});
+
+		it('Should connect to a database', () => {
+			expect(supabaseAdmin).toBeDefined();
 		});
 
 		it('Should return with a 404 status code and a message when visiting an invalid endpoint', async () => {

@@ -13,6 +13,7 @@ const connectDB = async () => {
 		const supabaseAdmin = createClient<Database>(checked[0], checked[1]);
 		await supabaseAdmin.from("test_table").select('1');
 		console.log('✅ Successfully Connected to the Database.');
+		return supabaseAdmin;
 	} catch (error) {
 		console.error(`🔴 Unable to connect to the database: $${error}.`);
 		throw new Error('🔴 Unable to connect to the database.');

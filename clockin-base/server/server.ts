@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Config for DB
-await connectDB();
+export const supabaseAdmin = await connectDB();
 
 // Connect to port 3000
 const PORT = 3000;

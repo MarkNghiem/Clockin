@@ -2,12 +2,12 @@ import request from 'supertest';
 
 import app, { gracefullyShutDown } from '../../server';
 import { config } from '../../config';
-import connectDB from '../../db/db';
+import { supabaseAdmin } from '../../server';
 
 describe('Testing Sign Up Integration Routes', () => {
   let checked: string[];
+  
   beforeAll(async () => {
-    connectDB();
     checked = config.checkData(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
   })
 
