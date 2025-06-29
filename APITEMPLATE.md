@@ -116,7 +116,7 @@ eid-cid: "string" (employeeID-companyID)
 ```
 - Response Codes:
 ```
-200 Success
+201 Created
 400 Bad Request
 404 Not Found
 500 Internal Server Error
