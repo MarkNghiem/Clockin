@@ -14,5 +14,13 @@ describe('Server Connection and Database Connection Integration Test', () => {
 			expect(res.type).toMatch(/html/);
 			expect(res.text).toContain('<!doctype html>');
 		});
+
+		it('Should return with a 404 status code and a message when visiting an invalid endpoint', async () => {
+			const res = await request(app).get('/p1/invalid');
+
+			expect(res.status).toBe(404);
+			expect(res.type).toMatch(/json/);
+			expect(res.body).toBe('This is not the page you are looking for');
+		})
 	});
 });

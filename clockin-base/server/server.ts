@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Config for DB
-connectDB();
+await connectDB();
 
 // Connect to port 3000
 const PORT = 3000;
