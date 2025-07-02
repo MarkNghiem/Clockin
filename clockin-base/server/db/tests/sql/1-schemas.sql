@@ -67,3 +67,5 @@ CREATE TABLE test.employees_in_company (
   employee_id UUID REFERENCES test.employees (employee_id) ON DELETE SET NULL,
   is_active BOOLEAN
 );
+
+-- CREATE SCHEMA IF NOT EXISTS test
