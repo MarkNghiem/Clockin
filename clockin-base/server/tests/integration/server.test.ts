@@ -1,7 +1,6 @@
 import request from 'supertest';
 
-import app, { gracefullyShutDown } from '../../server';
-import { supabaseAdmin } from '../../server';
+import app, { gracefullyShutDown, supabaseAdmin } from '../../server';
 
 describe('Server Connection and Database Connection Integration Test', () => {
 	afterAll(async () => {
@@ -27,6 +26,6 @@ describe('Server Connection and Database Connection Integration Test', () => {
 			expect(res.status).toBe(404);
 			expect(res.type).toMatch(/json/);
 			expect(res.body).toBe('This is not the page you are looking for');
-		})
+		});
 	});
 });

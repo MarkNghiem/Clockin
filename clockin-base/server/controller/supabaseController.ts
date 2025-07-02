@@ -15,7 +15,7 @@ const supabaseController: SupabaseController = {
     console.log('🔵 Runnning Supabase verifyInitialIDs middleware...');
     try {
       const {employeeID, companyID} = await res.locals.credentials;
-      const foundCredential = supabaseAdmin.from('companies').select('')
+      const foundCredential = supabaseAdmin.from
     } catch (error) {
       
     }

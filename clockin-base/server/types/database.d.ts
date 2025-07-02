@@ -219,39 +219,6 @@ export type Database = {
           },
         ]
       }
-      test_table: {
-        Row: {
-          created_at: string | null
-          id: string
-          number_not_null: number
-          number_nullable: number | null
-          salary: number
-          text_not_null: string
-          text_nullable: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          number_not_null: number
-          number_nullable?: number | null
-          salary: number
-          text_not_null: string
-          text_nullable?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          number_not_null?: number
-          number_nullable?: number | null
-          salary?: number
-          text_not_null?: string
-          text_nullable?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       users: {
         Row: {
           address_1: string | null

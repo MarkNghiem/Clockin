@@ -75,8 +75,6 @@ This markdown contains info of API Endpoints of Clockin'
   "message": "Data found with corresponding IDs"
   "data": {
     "companyName": "KN, LLC",
-    "firstName": "John",
-    "lastName": "Doe"
   }
 }
 ```
@@ -103,6 +101,8 @@ eid-cid: "string" (employeeID-companyID)
 - Request Body:
 ```
 {
+  "firstName": "John",
+  "lastName": "Doe",
   "userID": "JohnDoe123"
   "email": "JohnDoe123@email.com",
   "password": "HelloWorld",
