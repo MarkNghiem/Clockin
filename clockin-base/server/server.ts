@@ -7,6 +7,9 @@ import path from 'path';
 import connectDB from './db/db';
 import { currentDir, config } from './config';
 
+// Routers
+import userRouter from './routes/userRouter';
+
 const app = express();
 
 // Express configurations
@@ -14,6 +17,9 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+// Use Routers
+app.use('/p1/user', userRouter);
 
 // Config for DB
 export const supabaseAdmin = await connectDB();
