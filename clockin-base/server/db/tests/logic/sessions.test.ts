@@ -22,10 +22,10 @@ describe('Database Functionalities Tests', () => {
 	let supabase: ReturnType<typeof mockedModule.createClient>;
 
 	beforeAll(() => {
-		checked = config.checkData(
+		checked = config.checkData([
 			config.SUPABASE_URL,
-			config.SUPABASE_ANON_KEY
-		);
+			config.SUPABASE_ANON_KEY,
+		]);
 	});
 
 	beforeEach(async () => {
@@ -93,7 +93,9 @@ describe('Database Functionalities Tests', () => {
 			beforeEach(async () => {
 				try {
 					user =
-						await supabase.auth.signInWithPassword(mockGoodCredential);
+						await supabase.auth.signInWithPassword(
+							mockGoodCredential
+						);
 					console.log(`✅ ${mockGoodCredential.email} signed in.`);
 				} catch (error) {
 					console.error(error);
@@ -110,9 +112,9 @@ describe('Database Functionalities Tests', () => {
 					}
 				} catch (error) {
 					console.error(error);
-					throw new Error('🔴 Unable to sign out.')
+					throw new Error('🔴 Unable to sign out.');
 				}
-			})
+			});
 
 			it('Credentials should have values and they must be strings', () => {
 				expect(mockGoodCredential).toHaveProperty('email');
@@ -171,7 +173,9 @@ describe('Database Functionalities Tests', () => {
 			beforeEach(async () => {
 				try {
 					user =
-						await supabase.auth.signInWithPassword(mockGoodCredential);
+						await supabase.auth.signInWithPassword(
+							mockGoodCredential
+						);
 
 					if (user.error) {
 						console.error(user.error.message);

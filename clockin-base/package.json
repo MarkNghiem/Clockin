@@ -1,11 +1,11 @@
 {
 	"name": "clockin-base",
 	"private": true,
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"server": "nodemon",
+		"server": "NODE_ENV=development nodemon",
 		"build:front": "vite build",
 		"build:back": "tsc -p tsconfig.node.json && tsc-esm-fix dist/server --tsconfig tsconfig.node.json",
 		"prod": "vite preview",

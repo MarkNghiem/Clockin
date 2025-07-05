@@ -73,15 +73,17 @@ This markdown contains info of API Endpoints of Clockin'
 ```
 {
   "message": "Data found with corresponding IDs"
-  "data": {
-    "companyName": "KN, LLC",
-  }
+  "data": [
+    {
+      "companyName": "KN, LLC",
+    }
+  ]
 }
 ```
 - Response Codes:
 ```
 200 Success
-400 Bad Request
+401 Unauthorized
 404 Not Found
 500 Internal Server Error
 ```

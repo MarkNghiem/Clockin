@@ -6,8 +6,6 @@
 		"module": "ESNext",
 		"skipLibCheck": true,
 		"moduleResolution": "node",
-		"isolatedModules": true,
-		"verbatimModuleSyntax": true,
 		"moduleDetection": "force",
 		"strict": true,
 		"noUnusedLocals": true,

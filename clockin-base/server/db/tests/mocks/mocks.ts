@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { jest } from '@jest/globals';
 import { AuthError } from '@supabase/supabase-js';
 
@@ -67,49 +66,49 @@ const mockAuth: MockAuth = {
 	signOut: jest.fn(() => Promise.resolve({ error: null })),
 };
 
-const mockResponse = {
-	data: [mockData],
-	error: null,
-	count: null,
-	status: 200,
-	statusText: 'OK',
-};
+// const mockResponse = {
+// 	data: [mockData],
+// 	error: null,
+// 	count: null,
+// 	status: 200,
+// 	statusText: 'OK',
+// };
 
-const mockSelect = jest.fn(() =>
-	Promise.resolve({
-		...mockResponse,
-	})
-);
+// const mockSelect = jest.fn(() =>
+// 	Promise.resolve({
+// 		...mockResponse,
+// 	})
+// );
 
-const mockInsert = jest.fn(() =>
-	Promise.resolve({
-		...mockResponse,
-		data: null,
-		status: 201,
-		statusText: 'Created',
-	})
-);
+// const mockInsert = jest.fn(() =>
+// 	Promise.resolve({
+// 		...mockResponse,
+// 		data: null,
+// 		status: 201,
+// 		statusText: 'Created',
+// 	})
+// );
 
-const mockUpdate = jest.fn(() =>
-	Promise.resolve({
-		...mockResponse,
-		data: null,
-		status: 204,
-		statusText: 'No Content',
-	})
-);
+// const mockUpdate = jest.fn(() =>
+// 	Promise.resolve({
+// 		...mockResponse,
+// 		data: null,
+// 		status: 204,
+// 		statusText: 'No Content',
+// 	})
+// );
 
 // const mockUpsert = jest.fn(() => Promise.resolve ({
 
 // }))
 
-const mockFrom = jest.fn(() => ({
-	select: mockSelect,
-	insert: mockInsert,
-	update: mockUpdate,
-	upsert: jest.fn(),
-	delete: jest.fn(),
-}));
+// const mockFrom = jest.fn(() => ({
+// 	select: mockSelect,
+// 	insert: mockInsert,
+// 	update: mockUpdate,
+// 	upsert: jest.fn(),
+// 	delete: jest.fn(),
+// }));
 
 export const mockCreateClient = jest.fn(() => ({
 	auth: mockAuth,

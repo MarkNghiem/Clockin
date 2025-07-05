@@ -30,7 +30,7 @@ CREATE TABLE public.companies (
   occupational_field TEXT NOT NULL,
   owner_id UUID REFERENCES public.users (id) ON DELETE SET NULL,
   address_1 TEXT NOT NULL,
-  address_2 TEXT NOT NULL,
+  address_2 TEXT,
   address_city TEXT NOT NULL,
   address_state TEXT NOT NULL,
   address_zip TEXT NOT NULL,

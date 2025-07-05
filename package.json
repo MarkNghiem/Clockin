@@ -4,6 +4,7 @@
 	"private": true,
 	"version": "2.0.0",
 	"license": "MIT",
+	"type": "module",
 	"author": {
 		"name": "Mark Nghiem",
 		"email": "mark.kietnghiem@gmail.com",

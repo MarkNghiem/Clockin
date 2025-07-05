@@ -1,10 +1,15 @@
+-- Gtant usages for test schema to anon, authenticated and service_role
+GRANT USAGE ON SCHEMA test to anon, authenticated, service_role;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA test TO anon, authenticated;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA test TO service_role;
+
 -- Revoke all permissions from anon and authenticated
 REVOKE ALL ON test.users FROM anon, authenticated;
 REVOKE ALL ON test.companies FROM anon, authenticated;
 REVOKE ALL ON test.employees FROM anon, authenticated;
 REVOKE ALL ON test.companies_in_user FROM anon, authenticated;
 REVOKE ALL ON test.employees_in_company FROM anon, authenticated;
-GRANT INSERT ON test.users TO authenticated;
 
 -- Enable RLS
 ALTER TABLE test.users ENABLE ROW LEVEL SECURITY;
