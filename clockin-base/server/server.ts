@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import express from 'express';
 import path from 'path';
 
@@ -58,7 +59,7 @@ app.use(
 		_next: NextFunction
 	) => {
 		const defaultErr = {
-			log: '🔴 Unknown middleware error.',
+			log: '🔴 Unknown middleware error. | Global',
 			status: 500,
 			message: { error: '🔴 An unknown error occurred.' },
 		};

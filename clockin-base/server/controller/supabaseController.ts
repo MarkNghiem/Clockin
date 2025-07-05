@@ -12,7 +12,7 @@ const supabaseController: SupabaseController = {
 	verifyInitialIDs: async (_req, res, next) => {
 		console.log('🔵 Runnning Supabase verifyInitialIDs middleware...');
 		try {
-			const { employeeID, companyID } = await res.locals.credentials;
+			const { employeeID, companyID } = res.locals.credentials;
 			let data: { companies: { company_name: string } | null }[] | null,
 				error: PostgrestError | null;
 			if (process.env.NODE_ENV === 'test') {
@@ -31,7 +31,7 @@ const supabaseController: SupabaseController = {
 			}
 			if (error) {
 				return next({
-					log: `Error: ${error.details}`,
+					log: `🔴 Error: ${error.details} | supabaseController > verifyInitialIDs.`,
 					status: error.code,
 					message: { error: error.message },
 				});
@@ -39,7 +39,7 @@ const supabaseController: SupabaseController = {
 
 			if (!data || data[0].companies === null) {
 				return next({
-					log: '🔴 No Data Found.',
+					log: '🔴 No Data Found | supabaseController > verifyInitialIDs.',
 					status: 404,
 					message: { error: '🔴 No Data Found.' },
 				});
@@ -47,7 +47,7 @@ const supabaseController: SupabaseController = {
 
 			if (data.length > 1) {
 				return next({
-					log: '🔴 Unexpected Behaviour from Database. Please contact administrator.',
+					log: '🔴 Unexpected Behaviour from Database. Please contact administrator | supabaseController > verifyInitialIDs.',
 					status: 500,
 					message: {
 						error: '🔴 Unexpected Behaviour from Database. Please contact administrator.',
@@ -59,9 +59,9 @@ const supabaseController: SupabaseController = {
 			return next();
 		} catch (error) {
 			return next({
-				log: `🔴 Internal Server Error: ${error}`,
+				log: `🔴 ${error} | supabaseController > verifyInitialIDs.`,
 				status: 500,
-				message: {error: '🔴 Unable to retrieve from database.'},
+				message: {error: '🔴 Internal Server Error. Unable to retrieve from database.'},
 			});
 		}
 	},

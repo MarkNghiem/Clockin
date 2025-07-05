@@ -3,16 +3,16 @@
  * - verifyInitialIDs: Check IDs from request body for 1st step
  */
 
-import type { UserController } from "../types/types";
+import type { UserController } from '../types/types';
 
 const userController: UserController = {
 	verifyInitialIDs: async (req, res, next) => {
 		console.log('🔵 Running verifyInitialIDs middleware...');
 		try {
-			const { employeeID, companyID } = await req.body;
+			const { employeeID, companyID } = req.body;
 			if (!employeeID || !companyID) {
 				return next({
-					log: '🔴 Missing Required Credentials',
+					log: '🔴 Missing Required Credentials. userController > verifyInitialIDs.',
 					status: 401,
 					message: {
 						error: '🔴 Unauthorized Request. Missing Required Credentials',
@@ -31,7 +31,7 @@ const userController: UserController = {
 			return next();
 		} catch (error) {
 			return next({
-				log: error,
+				log: `🔴 ${error} | userController > verifyInitialIDs.`,
 				status: 500,
 				message: {
 					error: '🔴 Internal Server Error. Could not verify credentials.',
