@@ -32,7 +32,7 @@ const supabaseController: SupabaseController = {
 			if (error) {
 				return next({
 					log: `🔴 Error: ${error.details} | supabaseController > verifyInitialIDs.`,
-					status: error.code,
+					status: parseInt(error.code),
 					message: { error: error.message },
 				});
 			}

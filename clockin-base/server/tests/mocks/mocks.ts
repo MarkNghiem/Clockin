@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { jest } from '@jest/globals';
 import { AuthError } from '@supabase/supabase-js';
 
-import type { MockAuth, MockCredential } from './mockTypes';
+import type { MockSupabaseAdmin, MockAuth, MockCredential } from './mockTypes';
+
 import type { Session, User } from '@supabase/supabase-js';
 
 export const mockGoodCredential: MockCredential = {
@@ -49,7 +51,7 @@ const mockAuth: MockAuth = {
 				})
 			: Promise.resolve({
 					data: { user: null, session: null },
-					error: error,
+					error,
 				})
 	),
 	signInWithPassword: jest.fn((mockCredential: MockCredential) =>
@@ -60,57 +62,29 @@ const mockAuth: MockAuth = {
 				})
 			: Promise.resolve({
 					data: { user: null, session: null },
-					error: error,
+					error,
 				})
 	),
 	signOut: jest.fn(() => Promise.resolve({ error: null })),
 };
 
-// const mockResponse = {
-// 	data: [mockData],
-// 	error: null,
-// 	count: null,
-// 	status: 200,
-// 	statusText: 'OK',
-// };
-
-// const mockSelect = jest.fn(() =>
-// 	Promise.resolve({
-// 		...mockResponse,
-// 	})
-// );
-
-// const mockInsert = jest.fn(() =>
-// 	Promise.resolve({
-// 		...mockResponse,
-// 		data: null,
-// 		status: 201,
-// 		statusText: 'Created',
-// 	})
-// );
-
-// const mockUpdate = jest.fn(() =>
-// 	Promise.resolve({
-// 		...mockResponse,
-// 		data: null,
-// 		status: 204,
-// 		statusText: 'No Content',
-// 	})
-// );
-
-// const mockUpsert = jest.fn(() => Promise.resolve ({
-
-// }))
-
-// const mockFrom = jest.fn(() => ({
-// 	select: mockSelect,
-// 	insert: mockInsert,
-// 	update: mockUpdate,
-// 	upsert: jest.fn(),
-// 	delete: jest.fn(),
-// }));
-
 export const mockCreateClient = jest.fn(() => ({
 	auth: mockAuth,
-	// from: mockFrom,
 }));
+
+/**
+ * verifyInitialsIDs: Mocking Supabase's .eq() method to return a promise.
+ */
+
+export const mockSupabaseAdmin: MockSupabaseAdmin = {
+	schema: jest.fn((_schema: string) => mockSupabaseAdmin),
+	from: jest.fn((_table: string) => mockSupabaseAdmin),
+	select: jest.fn((_column: string) => mockSupabaseAdmin),
+	eq: jest.fn((_key: string, _value: unknown) => mockSupabaseAdmin),
+	verifyInitialIDs: jest.fn(() => {
+		return Promise.resolve({
+			data: [{ companies: { company_name: 'xyz' } }],
+			error: null,
+		});
+	}),
+};

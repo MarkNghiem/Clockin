@@ -1,19 +1,23 @@
 import { jest } from '@jest/globals';
 
-import { config } from '../../config';
-import connectDB from '../../db/db';
 import supabaseController from '../../controller/supabaseController';
+import { mockSupabaseAdmin } from '../mocks/mocks';
 
 import type { Request, Response } from 'express';
+import type { MockSupabaseAdmin } from '../mocks/mockTypes';
+
+jest.unstable_mockModule('../../server', () => ({
+	supabaseAdmin: mockSupabaseAdmin,
+}));
+console.log('✅ Mocked Modules.');
+
+const mockedModule = await import('../../server');
+const supabaseAdmin =
+	mockedModule.supabaseAdmin as unknown as MockSupabaseAdmin;
 
 describe('Testing supabaseController middlewares...', () => {
-	let supabaseAdmin: Awaited<ReturnType<typeof connectDB>>;
-
-  beforeAll(async () => {
-    const checked = config.checkData([config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE]);
-    supabaseAdmin = await connectDB(checked[0], checked[1]);
-  })
-  beforeEach(() => {
+	beforeEach(() => {
+		jest.clearAllMocks();
 		jest.resetAllMocks();
 		jest.restoreAllMocks();
 	});
@@ -28,27 +32,73 @@ describe('Testing supabaseController middlewares...', () => {
 		const res = {
 			locals: {
 				credentials: {
-					employeeID: '7e8e8597-e4af-4d24-bfc8-90c6daa101fe',
-					companyID: '88a9a4db-ec34-4ec2-b907-d5d70a9b7779',
+					employeeID: '123',
+					companyID: 'abc',
 				},
 			},
 		} as unknown as Response;
 		const next = jest.fn();
 
-    it('Should return with one set of data and move on to the next middleware if everything passes.', async () => {
-      await supabaseController.verifyInitialIDs(req, res, next);
+		it('Should return with one set of data and move on to the next middleware if everything passes.', async () => {
+			supabaseAdmin.verifyInitialIDs.mockResolvedValueOnce({
+				data: [{ companies: { company_name: 'xyz' } }],
+				error: null,
+			});
 
-      expect(res.locals).toHaveProperty('data');
-      expect(res.locals.data).toHaveLength(1);
-      expect(next).toHaveBeenCalledWith();
-    })
+			await supabaseController.verifyInitialIDs(req, res, next);
 
-    it('Should response with a correct status code and message when a query to the database failed.');
+			expect(res.locals).toHaveProperty('data');
+			expect(res.locals.data).toHaveLength(1);
+			expect(res.locals.data).toEqual([
+				{ companies: { company_name: 'xyz' } },
+			]);
+			expect(next).toHaveBeenCalledWith();
+		});
 
-    it('Should response with a 404 status code if no data were returned.');
+		it('Should response with a correct status code and message when a query to the database failed.', async () => {
+			supabaseAdmin.verifyInitialIDs.mockResolvedValueOnce({
+				data: null,
+				error: {
+					message: 'Error.',
+					code: '400',
+					detail: 'Error detail.',
+				},
+			});
 
-    it('Should response with a 500 status code if there are more than 1 result.');
+			await supabaseController.verifyInitialIDs(req, res, next);
 
-    it('Should response with a 500 status code if the middleware failed.');
+			expect(next).toHaveBeenCalledWith(
+				expect.objectContaining({
+					log: expect.stringContaining('Error:'),
+					status: expect.any(Number),
+					message: expect.objectContaining({
+						error: expect.any(String),
+					}),
+				})
+			);
+		});
+
+		it('Should response with a 404 status code if no data were returned.', async () => {
+			supabaseAdmin.verifyInitialIDs.mockResolvedValueOnce({
+				data: null,
+				error: null,
+			});
+
+			supabaseAdmin.verifyInitialIDs.mockResolvedValueOnce({
+				data: [{ companies: null }],
+				error: null,
+			});
+
+      
+		});
+
+		it(
+			'Should response with a 500 status code if there are more than 1 result.'
+		);
+
+		it('Should response with a 500 status code if the middleware failed.');
 	});
 });
+
+jest.unstable_unmockModule('../../server');
+console.log('✅ Unmocked Modules.');

@@ -1,19 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { jest } from '@jest/globals';
-import { config } from '../../../config';
-import { AuthError } from '@supabase/supabase-js';
-import type { AuthResponse } from '@supabase/supabase-js';
 
+import { config } from '../../config';
 import {
 	mockGoodCredential,
 	mockCreateClient,
 	mockBadCredential,
+	error,
 } from '../mocks/mocks';
-import type { MockCredential } from '../mocks/mockTypes';
+
+import type { AuthResponse } from '@supabase/supabase-js';
 
 jest.unstable_mockModule('@supabase/supabase-js', () => ({
 	createClient: mockCreateClient,
 }));
+console.log('✅ Mocked Module.');
 
 const mockedModule = await import('@supabase/supabase-js');
 
@@ -161,7 +161,7 @@ describe('Database Functionalities Tests', () => {
 				expect(user.data.session?.expires_at).toBeTruthy();
 			});
 
-			it('Sould not throw an error when successfully signed in', () => {
+			it('Should not throw an error when successfully signed in', () => {
 				expect(user.error).toBeNull();
 			});
 		});
@@ -203,31 +203,6 @@ describe('Database Functionalities Tests', () => {
 		});
 
 		describe('Fail Cases', () => {
-			const error = new AuthError('Error', 400, '400');
-
-			beforeEach(() => {
-				mockCreateClient.mockReturnValueOnce({
-					auth: {
-						signUp: jest.fn((_mockCredential: MockCredential) =>
-							Promise.resolve({
-								data: { user: null, session: null },
-								error: error,
-							})
-						),
-						signInWithPassword: jest.fn(
-							(_mockCredential: MockCredential) =>
-								Promise.resolve({
-									data: { user: null, session: null },
-									error: error,
-								})
-						),
-						signOut: jest.fn(() =>
-							Promise.resolve({ error: error })
-						),
-					},
-				});
-			});
-
 			it('Should throw when signing up fails', async () => {
 				await expect(
 					supabase.auth.signUp(mockBadCredential)
@@ -241,7 +216,19 @@ describe('Database Functionalities Tests', () => {
 			});
 
 			it('Should throw when signing out fails', async () => {
-				await expect(supabase.auth.signOut()).resolves.toHaveProperty(
+				mockCreateClient.mockReturnValueOnce({
+					auth: {
+						...mockCreateClient().auth,
+						signOut: jest.fn(() =>
+							Promise.resolve({ error })
+						),
+					},
+				});
+				
+				const badSupabase = mockedModule.createClient(checked[0], checked[1]);
+				await badSupabase.auth.signInWithPassword(mockBadCredential);
+
+				await expect(badSupabase.auth.signOut()).resolves.toHaveProperty(
 					'error',
 					error
 				);
@@ -251,3 +238,4 @@ describe('Database Functionalities Tests', () => {
 });
 
 jest.unstable_unmockModule('@supabase/supabase-js');
+console.log('✅ Unmocked Modules.');
