@@ -1,11 +1,5 @@
 import { jest } from '@jest/globals';
 
-import supabaseController from '../../controller/supabaseController';
-import { mockSupabaseAdmin } from '../mocks/mocks';
-
-import type { Request, Response } from 'express';
-import type { MockSupabaseAdmin } from '../mocks/mockTypes';
-
 jest.unstable_mockModule('../../server', () => ({
 	supabaseAdmin: mockSupabaseAdmin,
 }));
@@ -14,6 +8,12 @@ console.log('✅ Mocked Modules.');
 const mockedModule = await import('../../server');
 const supabaseAdmin =
 	mockedModule.supabaseAdmin as unknown as MockSupabaseAdmin;
+
+import supabaseController from '../../controller/supabaseController';
+import { mockSupabaseAdmin } from '../mocks/mocks';
+
+import type { Request, Response } from 'express';
+import type { MockSupabaseAdmin } from '../mocks/mockTypes';
 
 describe('Testing supabaseController middlewares...', () => {
 	beforeEach(() => {

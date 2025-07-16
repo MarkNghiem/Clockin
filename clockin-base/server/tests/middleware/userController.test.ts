@@ -3,7 +3,6 @@ import { jest } from '@jest/globals';
 import userController from '../../controller/userController';
 
 import type { Request, Response } from 'express';
-// Removed invalid import of Mock type from '@jest/globals'
 
 describe('Testing userController middlewares', () => {
 	beforeEach(() => {
