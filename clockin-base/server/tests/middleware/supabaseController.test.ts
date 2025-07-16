@@ -89,14 +89,69 @@ describe('Testing supabaseController middlewares...', () => {
 				error: null,
 			});
 
-      
+			await supabaseController.verifyInitialIDs(req, res, next);
+
+			expect(next).toHaveBeenCalledWith(
+				expect.objectContaining({
+					log: expect.stringContaining('No Data Found'),
+					status: expect(404),
+					message: expect.objectContaining({
+						error: expect.stringContaining('No Data Found'),
+					}),
+				})
+			);
+
+			await supabaseController.verifyInitialIDs(req, res, next);
+
+			expect(next).toHaveBeenCalledWith(
+				expect.objectContaining({
+					log: expect.stringContaining('No Data Found'),
+					status: expect(404),
+					message: expect.objectContaining({
+						error: expect.stringContaining('No Data Found'),
+					}),
+				})
+			);
 		});
 
-		it(
-			'Should response with a 500 status code if there are more than 1 result.'
-		);
+		it('Should response with a 500 status code if there are more than 1 result.', async () => {
+			supabaseAdmin.verifyInitialIDs.mockResolvedValueOnce({
+				data: [{ prop1: 1 }, { prop2: 2 }],
+				error: null,
+			});
 
-		it('Should response with a 500 status code if the middleware failed.');
+			await supabaseController.verifyInitialIDs(req, res, next);
+
+			expect(next).toHaveBeenCalledWith(
+				expect.objectContaining({
+					log: expect.stringContaining('Unexpected'),
+					status: expect(500),
+					message: expect.objectContaining({
+						error: expect.stringContaining('Unexpected'),
+					}),
+				})
+			);
+		});
+
+		it('Should response with a 500 status code if the middleware failed.', async () => {
+			const badReq = {
+				get Body() {
+					throw new Error('Failed');
+				},
+			} as unknown as Request;
+
+			await supabaseController.verifyInitialIDs(badReq, res, next);
+
+			expect(next).toHaveBeenCalledWith(
+				expect.objectContaining({
+					log: expect.stringContaining('Failed'),
+					status: expect(500),
+					message: expect.objectContaining({
+						error: expect.stringContaining('Internal Server Error'),
+					}),
+				})
+			);
+		});
 	});
 });
 

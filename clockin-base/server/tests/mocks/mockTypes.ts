@@ -24,7 +24,7 @@ export interface MockAuth {
  * Type for mock data returned from 'verifyInitialIDs' method in 'mockSupabaseAdmin' object.
  */
 export interface VerifyInitialIDsQueryResult {
-	data: { companies: { company_name: string } | null }[] | null;
+	data: Record<string, unknown>[] | null;
 	error: { message: string; code: string; detail: string | null } | null;
 }
 
