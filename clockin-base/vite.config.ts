@@ -8,10 +8,32 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
 	plugins: [react(), tailwindcss()],
 	test: {
-		name: {
-			label: "Initializing Vitest...",
-			color: 'yellow',
-		},
-		globals: true
+		globals: true,
+		projects: [
+			{
+				test: {
+					globals: true,
+					include: ['server/tests/db/*.test.{ts,js}'],
+					name: { label: 'Database Unit Tests', color: 'magenta' },
+				},
+			},
+			{
+				test: {
+					globals: true,
+					include: ['server/tests/middleware/*.test.{ts,js}'],
+					name: { label: 'Middleware Unit Tests', color: 'magenta' },
+				},
+			},
+			{
+				test: {
+					globals: true,
+					include: ['server/tests/integration/*.test.{ts,js}'],
+					name: {
+						label: 'Server Integration Tests',
+						color: 'magenta',
+					},
+				},
+			},
+		],
 	},
 });

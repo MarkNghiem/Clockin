@@ -1,26 +1,20 @@
 import request from 'supertest';
-import { jest } from '@jest/globals';
 
-import { gracefullyShutDown } from '../../server';
 import { app } from '../../config';
 
 import type { Response } from 'supertest';
 
 describe('Testing Sign Up Integration Routes...', () => {
 	beforeEach(() => {
-		jest.resetModules();
-		jest.resetAllMocks();
-		jest.restoreAllMocks();
+		vi.resetModules();
+		vi.resetAllMocks();
+		vi.restoreAllMocks();
 	});
 
 	afterEach(() => {
-		jest.resetModules();
-		jest.resetAllMocks();
-		jest.restoreAllMocks();
-	});
-
-	afterAll(async () => {
-		await gracefullyShutDown();
+		vi.resetModules();
+		vi.resetAllMocks();
+		vi.restoreAllMocks();
 	});
 
 	describe('POST /signup', () => {

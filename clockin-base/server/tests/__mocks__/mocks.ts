@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { jest } from '@jest/globals';
 import { AuthError } from '@supabase/supabase-js';
 
-import type { MockSupabaseAdmin, MockAuth, MockCredential } from './mockTypes';
-
+import type { MockAuth, MockCredential, MockSupabaseAdmin } from './mockTypes';
 import type { Session, User } from '@supabase/supabase-js';
 
 export const mockGoodCredential: MockCredential = {
@@ -43,7 +41,7 @@ export const mockData = {
 export const error = new AuthError('Error', 400, '400');
 
 const mockAuth: MockAuth = {
-	signUp: jest.fn((mockCredential: MockCredential) =>
+	signUp: vi.fn((mockCredential: MockCredential) =>
 		mockCredential.email === mockGoodCredential.email
 			? Promise.resolve({
 					data: { user: mockUserData, session: null },
@@ -54,7 +52,7 @@ const mockAuth: MockAuth = {
 					error,
 				})
 	),
-	signInWithPassword: jest.fn((mockCredential: MockCredential) =>
+	signInWithPassword: vi.fn((mockCredential: MockCredential) =>
 		mockCredential.email === mockGoodCredential.email
 			? Promise.resolve({
 					data: { user: mockUserData, session: mockSession },
@@ -65,10 +63,10 @@ const mockAuth: MockAuth = {
 					error,
 				})
 	),
-	signOut: jest.fn(() => Promise.resolve({ error: null })),
+	signOut: vi.fn(() => Promise.resolve({ error: null })),
 };
 
-export const mockCreateClient = jest.fn(() => ({
+export const mockCreateClient = vi.fn(() => ({
 	auth: mockAuth,
 }));
 
@@ -77,11 +75,11 @@ export const mockCreateClient = jest.fn(() => ({
  */
 
 export const mockSupabaseAdmin: MockSupabaseAdmin = {
-	schema: jest.fn((_schema: string) => mockSupabaseAdmin),
-	from: jest.fn((_table: string) => mockSupabaseAdmin),
-	select: jest.fn((_column: string) => mockSupabaseAdmin),
-	eq: jest.fn((_key: string, _value: unknown) => mockSupabaseAdmin),
-	verifyInitialIDs: jest.fn(() => {
+	schema: vi.fn((_schema: string) => mockSupabaseAdmin),
+	from: vi.fn((_table: string) => mockSupabaseAdmin),
+	select: vi.fn((_column: string) => mockSupabaseAdmin),
+	eq: vi.fn((_key: string, _value: unknown) => mockSupabaseAdmin),
+	verifyInitialIDs: vi.fn(() => {
 		return Promise.resolve({
 			data: [{ companies: { company_name: 'xyz' } }],
 			error: null,

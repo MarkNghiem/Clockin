@@ -1,34 +1,32 @@
-import { jest } from '@jest/globals';
-
 import { config } from '../../config';
 import {
 	mockGoodCredential,
 	mockCreateClient,
 	mockBadCredential,
 	error,
-} from '../mocks/mocks';
+} from '../__mocks__/mocks';
 
 import type { AuthResponse } from '@supabase/supabase-js';
-
-jest.unstable_mockModule('@supabase/supabase-js', () => ({
-	createClient: mockCreateClient,
-}));
-console.log('✅ Mocked Module.');
-
-const mockedModule = await import('@supabase/supabase-js');
+import type * as SupabaseType from '@supabase/supabase-js';
 
 describe('Database Functionalities Tests', () => {
 	let checked: string[];
+	let mockedModule: typeof SupabaseType;
 	let supabase: ReturnType<typeof mockedModule.createClient>;
 
-	beforeAll(() => {
+	beforeAll(async () => {
+		vi.resetAllMocks();
 		checked = config.checkData([
 			config.SUPABASE_URL,
 			config.SUPABASE_ANON_KEY,
 		]);
-	});
 
-	beforeEach(async () => {
+		vi.doMock('@supabase/supabase-js', () => ({
+			createClient: mockCreateClient,
+		}));
+		console.log('✅ Module Mocked.');
+		mockedModule = await import('@supabase/supabase-js');
+		
 		try {
 			supabase = mockedModule.createClient(checked[0], checked[1]);
 			console.log('✅ New Test Client created!');
@@ -36,6 +34,13 @@ describe('Database Functionalities Tests', () => {
 			console.error(error);
 			throw new Error('🔴 Unable to create new test client.');
 		}
+	});
+
+	afterAll(() => {
+		vi.doUnmock('@supabase/supabase-js');
+		console.log('✅ Module Unmocked.');
+
+		vi.resetAllMocks();
 	});
 
 	it('Should create a new client', () => {
@@ -219,23 +224,20 @@ describe('Database Functionalities Tests', () => {
 				mockCreateClient.mockReturnValueOnce({
 					auth: {
 						...mockCreateClient().auth,
-						signOut: jest.fn(() =>
-							Promise.resolve({ error })
-						),
+						signOut: vi.fn(() => Promise.resolve({ error })),
 					},
 				});
-				
-				const badSupabase = mockedModule.createClient(checked[0], checked[1]);
+
+				const badSupabase = mockedModule.createClient(
+					checked[0],
+					checked[1]
+				);
 				await badSupabase.auth.signInWithPassword(mockBadCredential);
 
-				await expect(badSupabase.auth.signOut()).resolves.toHaveProperty(
-					'error',
-					error
-				);
+				await expect(
+					badSupabase.auth.signOut()
+				).resolves.toHaveProperty('error', error);
 			});
 		});
 	});
 });
-
-jest.unstable_unmockModule('@supabase/supabase-js');
-console.log('✅ Unmocked Modules.');

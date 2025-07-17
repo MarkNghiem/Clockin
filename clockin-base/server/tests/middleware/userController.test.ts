@@ -1,18 +1,14 @@
-import { jest } from '@jest/globals';
-
 import userController from '../../controller/userController';
 
 import type { Request, Response } from 'express';
 
 describe('Testing userController middlewares', () => {
-	beforeEach(() => {
-		jest.resetAllMocks();
-		jest.restoreAllMocks();
+	beforeAll(() => {
+		vi.restoreAllMocks();
 	});
 
-	afterEach(() => {
-		jest.resetAllMocks();
-		jest.restoreAllMocks();
+	afterAll(() => {
+		vi.restoreAllMocks();
 	});
 
 	describe('verifyInitialIDs middleware.', () => {
@@ -23,7 +19,8 @@ describe('Testing userController middlewares', () => {
 			},
 		} as unknown as Request;
 		const res = { locals: {} } as unknown as Response;
-		const next = jest.fn();
+		const next = vi.fn();
+		
 		it('Should move on to next middleware if everything passes.', async () => {
 			await userController.verifyInitialIDs(req, res, next);
 

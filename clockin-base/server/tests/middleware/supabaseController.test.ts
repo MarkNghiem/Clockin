@@ -1,31 +1,31 @@
-import { jest } from '@jest/globals';
-
-jest.unstable_mockModule('../../server', () => ({
-	supabaseAdmin: mockSupabaseAdmin,
-}));
-console.log('✅ Mocked Modules.');
-
-const mockedModule = await import('../../server');
-const supabaseAdmin =
-	mockedModule.supabaseAdmin as unknown as MockSupabaseAdmin;
-
 import supabaseController from '../../controller/supabaseController';
-import { mockSupabaseAdmin } from '../mocks/mocks';
+import { mockSupabaseAdmin } from '../__mocks__/mocks';
 
 import type { Request, Response } from 'express';
-import type { MockSupabaseAdmin } from '../mocks/mockTypes';
+import type * as ServerType from '../../server';
+import type { MockSupabaseAdmin } from '../__mocks__/mockTypes';
 
 describe('Testing supabaseController middlewares...', () => {
-	beforeEach(() => {
-		jest.clearAllMocks();
-		jest.resetAllMocks();
-		jest.restoreAllMocks();
+	let mockedModule: typeof ServerType;
+	let supabaseAdmin: MockSupabaseAdmin;
+	
+	beforeAll(async () => {
+		vi.resetAllMocks();
+		vi.doMock('../../server', () => ({
+			supabaseAdmin: mockSupabaseAdmin,
+		}));
+		console.log('✅ Modules Mocked.');
+		
+		mockedModule = await import('../../server');
+		supabaseAdmin = mockedModule.supabaseAdmin as unknown as MockSupabaseAdmin;
 	});
+	
+	afterAll(() => {
+		vi.doUnmock('../../server');
+		console.log('✅ Module Unmocked.');
 
-	afterEach(() => {
-		jest.resetAllMocks();
-		jest.restoreAllMocks();
-	});
+		vi.resetAllMocks();
+	})
 
 	describe('verifyInitialIDs middleware.', () => {
 		const req = {} as unknown as Request;
@@ -37,7 +37,7 @@ describe('Testing supabaseController middlewares...', () => {
 				},
 			},
 		} as unknown as Response;
-		const next = jest.fn();
+		const next = vi.fn();
 
 		it('Should return with one set of data and move on to the next middleware if everything passes.', async () => {
 			supabaseAdmin.verifyInitialIDs.mockResolvedValueOnce({
@@ -154,6 +154,3 @@ describe('Testing supabaseController middlewares...', () => {
 		});
 	});
 });
-
-jest.unstable_unmockModule('../../server');
-console.log('✅ Unmocked Modules.');

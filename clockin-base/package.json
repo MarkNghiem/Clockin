@@ -10,7 +10,7 @@
 		"build:back": "tsc -p tsconfig.node.json && tsc-esm-fix dist/server --tsconfig tsconfig.node.json",
 		"prod": "vite preview",
 		"lint": "eslint .",
-		"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles"
+		"test": "vitest"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.14.0",

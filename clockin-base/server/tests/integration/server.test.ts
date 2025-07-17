@@ -1,14 +1,10 @@
 import request from 'supertest';
 
-import { gracefullyShutDown, supabaseAdmin } from '../../server';
+import { supabaseAdmin } from '../../server';
 import { app } from '../../config';
 import connectDB from '../../db/db';
 
 describe('Server Connection and Database Connection Integration Test', () => {
-	afterAll(async () => {
-		await gracefullyShutDown();
-	});
-
 	describe('GET /p1', () => {
 		describe('Success', () => {
 			it('Should respond with a 200 status code and an HTML page', async () => {
