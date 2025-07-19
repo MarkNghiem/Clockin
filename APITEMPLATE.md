@@ -16,10 +16,10 @@ This markdown contains info of API Endpoints of Clockin'
 -   [GET /:uid/:cid](#get-uidcid)
 -   [GET /:uid/dashboard/:cid](#get-uiddashboardcid)
 -   [POST /signup](#post-signup)
--   [POST /signup/:eid/:uid](#post-signupeiduid)
+-   [POST /signup/:eid/:cid](#post-signupeidcid)
 -   [POST /login](#post-login)
 -   [POST /welcome/:uid](#post-welcomeuid)
--   [POST /:uid/:cid](#post-uidcid)
+-   [POST /:uid/:cid/edit](#post-uidcidedit)
 -   [POST /logout](#post-logout)
 -   [PATCH /:uid/:cid/edit](#patch-uidcidedit)
 
@@ -105,13 +105,13 @@ This markdown contains info of API Endpoints of Clockin'
 500 Internal Server Error
 ```
 
-## _POST /signup/:eid/:uid_
+## _POST /signup/:eid/:cid_
 
 -   Request Parameters:
 
 ```js
 eid: 'string' (employeeID);
-uid: 'string' (companyID);
+cid: 'string' (companyID);
 ```
 
 -   Request Option: `n/a`
@@ -456,7 +456,7 @@ credentials: 'include';
 
 ```
 
-## _POST /:uid/:cid_
+## _POST /:uid/:cid/edit_
 
 -   Request Parameters:
 
