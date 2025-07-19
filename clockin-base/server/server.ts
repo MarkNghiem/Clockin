@@ -3,7 +3,6 @@ import express from 'express';
 import path from 'path';
 
 // Import from other files
-import connectDB from './db/db';
 import { app, PORT, currentDir, config } from './config';
 
 // Import types
@@ -28,13 +27,6 @@ const server = app.listen(PORT, async () => {
 	}
 });
 
-const checked = config.checkData([
-	config.SUPABASE_URL,
-	config.SUPABASE_SERVICE_ROLE,
-]);
-
-export const supabaseAdmin = await connectDB(checked[0], checked[1]);
-
 // Serving static files
 app.use(express.static(path.resolve(currentDir, '../src/')));
 
@@ -51,24 +43,17 @@ app.use((_req, res) => {
 });
 
 // Global error handler
-app.use(
-	(
-		err: ErrorObj,
-		_req: Request,
-		res: Response,
-		_next: NextFunction
-	) => {
-		const defaultErr = {
-			log: '🔴 Unknown middleware error. | Global',
-			status: 500,
-			message: { error: '🔴 An unknown error occurred.' },
-		};
+app.use((err: ErrorObj, _req: Request, res: Response, _next: NextFunction) => {
+	const defaultErr = {
+		log: '🔴 Unknown middleware error. | Global',
+		status: 500,
+		message: { error: '🔴 An unknown error occurred.' },
+	};
 
-		const errorObj = Object.assign({}, defaultErr, err);
-		console.error(err.log);
-		res.status(errorObj.status).json(errorObj.message);
-	}
-);
+	const errorObj = Object.assign({}, defaultErr, err);
+	console.error(err.log);
+	res.status(errorObj.status).json(errorObj.message);
+});
 
 // Gracefully shutting down
 let isShuttingDown = false;
@@ -99,3 +84,6 @@ export const gracefullyShutDown = async () => {
 // Shutdown signals
 process.on('SIGINT', gracefullyShutDown);
 process.on('SIGTERM', gracefullyShutDown);
+
+// Export app again to use be able to use routers in test
+export { app };

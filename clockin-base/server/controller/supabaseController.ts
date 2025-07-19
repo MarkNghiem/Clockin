@@ -3,7 +3,7 @@
  * - verifyInitialIDs: Send checked IDs to the database to search and verify one more time
  */
 
-import { supabaseAdmin } from '../server';
+import { supabaseAdmin } from '../db/db';
 import { PostgrestError } from '@supabase/supabase-js';
 
 import type { SupabaseController } from '../types/types';
@@ -12,46 +12,31 @@ const supabaseController: SupabaseController = {
 	verifyInitialIDs: async (_req, res, next) => {
 		console.log('🔵 Runnning Supabase verifyInitialIDs middleware...');
 		try {
+			const databaseAdmin = await supabaseAdmin();
 			const { employeeID, companyID } = res.locals.credentials;
-			let data: { companies: { company_name: string } | null }[] | null,
+			let data: { companies: { company_name: string } | null } | null,
 				error: PostgrestError | null;
 			if (process.env.NODE_ENV === 'test') {
-				({ data, error } = await supabaseAdmin
+				({ data, error } = await databaseAdmin
 					.schema('test')
 					.from('employees_in_company')
 					.select('companies!inner(company_name)')
 					.eq('employee_id', employeeID)
-					.eq('company_id', companyID));
+					.eq('company_id', companyID)
+					.single());
 			} else {
-				({ data, error } = await supabaseAdmin
+				({ data, error } = await databaseAdmin
 					.from('employees_in_company')
 					.select('companies!inner(company_name)')
 					.eq('employee_id', employeeID)
-					.eq('company_id', companyID));
+					.eq('company_id', companyID)
+					.single());
 			}
 			if (error) {
 				return next({
 					log: `🔴 Error: ${error.details} | supabaseController > verifyInitialIDs.`,
-					status: parseInt(error.code),
-					message: { error: error.message },
-				});
-			}
-
-			if (!data || data[0].companies === null) {
-				return next({
-					log: '🔴 No Data Found | supabaseController > verifyInitialIDs.',
 					status: 404,
-					message: { error: '🔴 No Data Found.' },
-				});
-			}
-
-			if (data.length > 1) {
-				return next({
-					log: '🔴 Unexpected Behaviour from Database. Please contact administrator | supabaseController > verifyInitialIDs.',
-					status: 500,
-					message: {
-						error: '🔴 Unexpected Behaviour from Database. Please contact administrator.',
-					},
+					message: { error: error.message },
 				});
 			}
 
@@ -61,7 +46,9 @@ const supabaseController: SupabaseController = {
 			return next({
 				log: `🔴 ${error} | supabaseController > verifyInitialIDs.`,
 				status: 500,
-				message: {error: '🔴 Internal Server Error. Unable to retrieve from database.'},
+				message: {
+					error: '🔴 Internal Server Error. Unable to retrieve from database.',
+				},
 			});
 		}
 	},

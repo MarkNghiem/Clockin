@@ -1,19 +1,16 @@
 import request from 'supertest';
 
-import { app } from '../../config';
+import { app } from '../../server';
 
 import type { Response } from 'supertest';
 
 describe('Testing Sign Up Integration Routes...', () => {
-	beforeEach(() => {
-		vi.resetModules();
-		vi.resetAllMocks();
+	beforeAll(() => {
 		vi.restoreAllMocks();
+	
 	});
 
-	afterEach(() => {
-		vi.resetModules();
-		vi.resetAllMocks();
+	afterAll(() => {
 		vi.restoreAllMocks();
 	});
 
@@ -31,7 +28,6 @@ describe('Testing Sign Up Integration Routes...', () => {
 			});
 
 			it('Should respond with a 200 status code and a JSON object.', () => {
-				console.log(res.body);
 				expect(res.status).toEqual(200);
 				expect(res.type).toMatch(/json/);
 				expect(res.body).toBeDefined();

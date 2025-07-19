@@ -25,7 +25,7 @@ export interface MockAuth {
  * Type for mock data returned from 'verifyInitialIDs' method in 'mockSupabaseAdmin' object.
  */
 export interface VerifyInitialIDsQueryResult {
-	data: Record<string, unknown>[] | null;
+	data: Record<string, unknown>[] | Record<string,unknown> | null;
 	error: { message: string; code: string; detail: string | null } | null;
 }
 
@@ -34,5 +34,5 @@ export interface MockSupabaseAdmin {
 	from: Mock<(table: string) => MockSupabaseAdmin>;
 	select: Mock<(column: string) => MockSupabaseAdmin>;
 	eq: Mock<(key: string, value: unknown) => MockSupabaseAdmin>;
-	verifyInitialIDs: Mock<() => Promise<VerifyInitialIDsQueryResult>>;
+	single: Mock<() => Promise<VerifyInitialIDsQueryResult>>;
 }

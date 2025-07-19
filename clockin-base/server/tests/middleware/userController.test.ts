@@ -89,7 +89,7 @@ describe('Testing userController middlewares', () => {
 
 		it('Should response with a 500 status code if the middleware failed.', async () => {
 			const badReq = {
-				get Body() {
+				get body() {
 					throw new Error('Failed');
 				},
 			} as unknown as Request;

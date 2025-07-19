@@ -71,7 +71,8 @@ export const mockCreateClient = vi.fn(() => ({
 }));
 
 /**
- * verifyInitialsIDs: Mocking Supabase's .eq() method to return a promise.
+ * A Mock for supabaseAdmin object.
+ * @method verifyInitialsIDs: Mocking Supabase's .eq() method to return a promise.
  */
 
 export const mockSupabaseAdmin: MockSupabaseAdmin = {
@@ -79,10 +80,8 @@ export const mockSupabaseAdmin: MockSupabaseAdmin = {
 	from: vi.fn((_table: string) => mockSupabaseAdmin),
 	select: vi.fn((_column: string) => mockSupabaseAdmin),
 	eq: vi.fn((_key: string, _value: unknown) => mockSupabaseAdmin),
-	verifyInitialIDs: vi.fn(() => {
-		return Promise.resolve({
-			data: [{ companies: { company_name: 'xyz' } }],
-			error: null,
-		});
-	}),
+	single: vi.fn(() => Promise.resolve({
+		data: { companies: { company_name: 'string' } },
+		error: null,
+	})),
 };

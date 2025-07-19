@@ -19,7 +19,7 @@ userRouter.post(
 		res.status(200).json({
 			message: '✅ Data found with corresponding IDs.',
 			data: {
-				companyName: res.locals.data[0].companies.company_name,
+				companyName: res.locals.data.companies.company_name,
 			},
 		});
 	}

@@ -1,8 +1,7 @@
 import request from 'supertest';
 
-import { supabaseAdmin } from '../../server';
-import { app } from '../../config';
 import connectDB from '../../db/db';
+import { app } from '../../server';
 
 describe('Server Connection and Database Connection Integration Test', () => {
 	describe('GET /p1', () => {
@@ -13,10 +12,6 @@ describe('Server Connection and Database Connection Integration Test', () => {
 				expect(res.status).toBe(200);
 				expect(res.type).toMatch(/html/);
 				expect(res.text).toContain('<!doctype html>');
-			});
-
-			it('Should connect to a database', async () => {
-				expect(supabaseAdmin).toBeDefined();
 			});
 		});
 
