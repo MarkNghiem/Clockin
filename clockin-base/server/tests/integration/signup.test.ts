@@ -86,4 +86,18 @@ describe('Testing Sign Up Integration Routes...', () => {
 			);
 		});
 	});
+
+	describe.only('POST /signup/:eid/:uid', () => {
+		describe('Success Checks', () => {
+			it('Endpoint should have a parameter');
+			it('Request Body should contain needed info');
+			it('Should create a new user in the database');
+			it('Should response with a 201 status code and a JSON object');
+			it('Success Responded data should only contain a message');
+		});
+
+		describe('Failure Checks', () => {
+			it('Should throw an error ')
+		});
+	})
 });

@@ -40,6 +40,7 @@ export const mockData = {
 
 export const error = new AuthError('Error', 400, '400');
 
+/** A Mock for auth prop in mockCreateClient's returned object */
 const mockAuth: MockAuth = {
 	signUp: vi.fn((mockCredential: MockCredential) =>
 		mockCredential.email === mockGoodCredential.email
@@ -66,22 +67,23 @@ const mockAuth: MockAuth = {
 	signOut: vi.fn(() => Promise.resolve({ error: null })),
 };
 
+/** A Mock for Supabase's createClient function */
 export const mockCreateClient = vi.fn(() => ({
 	auth: mockAuth,
 }));
 
-/**
- * A Mock for supabaseAdmin object.
- * @method verifyInitialsIDs: Mocking Supabase's .eq() method to return a promise.
- */
-
+/** A Mock for supabaseAdmin object */
 export const mockSupabaseAdmin: MockSupabaseAdmin = {
 	schema: vi.fn((_schema: string) => mockSupabaseAdmin),
 	from: vi.fn((_table: string) => mockSupabaseAdmin),
 	select: vi.fn((_column: string) => mockSupabaseAdmin),
 	eq: vi.fn((_key: string, _value: unknown) => mockSupabaseAdmin),
-	single: vi.fn(() => Promise.resolve({
-		data: { companies: { company_name: 'string' } },
-		error: null,
-	})),
+	single: vi.fn(() =>
+		Promise.resolve({
+			data: { companies: { company_name: 'string' } },
+			error: null,
+		})
+	),
 };
+
+mockSupabaseAdmin.schema('hi')

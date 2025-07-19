@@ -13,13 +13,13 @@ This markdown contains info of API Endpoints of Clockin'
 -   [GET /](#get)
 -   [GET /welcome/:uid](#get-welcomeuid)
 -   [GET /:uid](#get-uid)
--   [GET /:uid-cid](#get-uid-cid)
+-   [GET /:uid/:cid](#get-uidcid)
 -   [GET /:uid/dashboard/:cid](#get-uiddashboardcid)
 -   [POST /signup](#post-signup)
--   [POST /signup/:eid-cid](#post-signupeid-cid)
+-   [POST /signup/:eid/:uid](#post-signupeiduid)
 -   [POST /login](#post-login)
 -   [POST /welcome/:uid](#post-welcomeuid)
--   [POST /:uid/:cid/edit](#post-uidcidedit)
+-   [POST /:uid/:cid](#post-uidcid)
 -   [POST /logout](#post-logout)
 -   [PATCH /:uid/:cid/edit](#patch-uidcidedit)
 
@@ -40,24 +40,24 @@ This markdown contains info of API Endpoints of Clockin'
 -   Request Option: `n/a`
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json",
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body: `n/a`
 -   Response:
 
-```
+```json
 {
-  "message": "Welcome to Clockin'",
+	"message": "Welcome to Clockin'"
 }
 ```
 
 -   Response Codes:
 
-```
+```js
 200 Success
 400 Bad Request
 404 Not Found
@@ -70,24 +70,24 @@ This markdown contains info of API Endpoints of Clockin'
 -   Request Option: `n/a`
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json",
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body:
 
-```
+```json
 {
-  "employeeID": "string",
-  "companyID": "string",
+	"employeeID": "string",
+	"companyID": "string"
 }
 ```
 
 -   Response:
 
-```
+```json
 {
   "message": "Data found with corresponding IDs"
   "data":
@@ -99,52 +99,53 @@ This markdown contains info of API Endpoints of Clockin'
 
 -   Response Codes:
 
-```
+```js
 200 Success
 404 Not Found
 500 Internal Server Error
 ```
 
-## _POST /signup/:eid-cid_
+## _POST /signup/:eid/:uid_
 
 -   Request Parameters:
 
-```
-eid-cid: "string" (employeeID-companyID)
+```js
+eid: 'string' (employeeID);
+uid: 'string' (companyID);
 ```
 
 -   Request Option: `n/a`
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json"
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body:
 
-```
+```json
 {
-  "firstName": "John",
-  "lastName": "Doe",
-  "userID": "JohnDoe123"
-  "email": "JohnDoe123@email.com",
-  "password": "HelloWorld",
+	"firstName": "John",
+	"lastName": "Doe",
+	"userID": "JohnDoe123",
+	"email": "JohnDoe123@email.com",
+	"password": "HelloWorld"
 }
 ```
 
 -   Response:
 
-```
+```json
 {
-  "message": "Successfully created a new account",
+	"message": "Successfully created a new account"
 }
 ```
 
 -   Response Codes:
 
-```
+```js
 201 Created
 400 Bad Request
 404 Not Found
@@ -157,24 +158,24 @@ eid-cid: "string" (employeeID-companyID)
 -   Request Option: `n/a`
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json"
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body:
 
-```
+```json
 {
-  "userID": "JohnDoe123",
-  "password": "HelloWorld",
+	"userID": "JohnDoe123",
+	"password": "HelloWorld"
 }
 ```
 
 -   Response:
 
-```
+```json
 {
   "message": "Successfully Logged In!",
   "data": {
@@ -182,9 +183,9 @@ eid-cid: "string" (employeeID-companyID)
     "lastName": "Doe",
     "companyList": [
       {
-        companyName: "KN, LLC",
-        conpanyID: "string",
-        isFirstTime: boolean,
+        "companyName": "KN, LLC",
+        "companyID": "string",
+        "isFirstTime": boolean,
       },
       ...
     ],
@@ -197,7 +198,7 @@ eid-cid: "string" (employeeID-companyID)
 
 -   Response Codes:
 
-```
+```js
 200 Success
 400 Bad Request
 401 Unauthorized
@@ -209,36 +210,36 @@ eid-cid: "string" (employeeID-companyID)
 
 -   Request Parameters:
 
-```
-uid: "JohnDoe123" (userID)
+```js
+uid: 'JohnDoe123'(userID);
 ```
 
 -   Request Option:
 
-```
-credentials: "include"
+```js
+credentials: 'include';
 ```
 
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json",
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body: `n/a`
 -   Response:
 
-```
+```json
 {
-  "message": "First time user detected. Triggering additional set up steps..."
+	"message": "First time user detected. Triggering additional set up steps..."
 }
 ```
 
 -   Response Codes:
 
-```
+```js
 200 Success
 400 Bad Request
 401 Unauthorized
@@ -250,46 +251,50 @@ credentials: "include"
 
 -   Request Parameters:
 
-```
-uid: "JohnDoe123" (userID)
+```js
+uid: 'JohnDoe123'(userID);
 ```
 
 -   Request Option:
 
-```
-credentials: "include"
+```js
+credentials: 'include';
 ```
 
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json",
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body:
 
-```
+```json
 {
-  "addressLine1": "123 N Alpha Ave",
-  "addressLine2": "#A",
-  "city": "Los Angeles",
-  "state": "CA",
-  "zip": "12345",
-  "country": "USA",
-  "countryCode": "+1",
-  "phoneNumber": "1234567890",
+	"addressLine1": "123 N Alpha Ave",
+	"addressLine2": "#A",
+	"city": "Los Angeles",
+	"state": "CA",
+	"zip": "12345",
+	"country": "USA",
+	"countryCode": "+1",
+	"phoneNumber": "1234567890"
 }
 ```
 
 -   Response:
-    {
-    "message": "Data successfully updated"
-    }
+
+```json
+{
+	"message": "Data successfully updated"
+}
+```
+
 -   Response Codes:
 
-```
+```js
 200 Success
 400 Bad Request
 401 Unauthorized
@@ -301,32 +306,36 @@ credentials: "include"
 
 -   Request Parameters:
 
-```
-uid: "JohnDoe123" (userID)
+```js
+uid: 'JohnDoe123'(userID);
 ```
 
 -   Request Option:
 
-```
-credentials: "include"
+```js
+credentials: 'include';
 ```
 
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json",
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body: `n/a`
 -   Response:
-    {
-    "message": "Prompting user to select a company..."
-    }
+
+```json
+{
+	"message": "Prompting user to select a company..."
+}
+```
+
 -   Response Codes:
 
-```
+```js
 200 Success
 400 Bad Request
 401 Unauthorized
@@ -334,76 +343,80 @@ credentials: "include"
 500 Internal Server Error
 ```
 
-## _GET /:uid-cid_
+## _GET /:uid/:cid_
 
 -   Request Parameters:
 
-```
-uid-cid: "string" (userID-companyID)
+```js
+uid: 'string'(userID);
+cid: 'string'(companyID);
 ```
 
 -   Request Option:
 
-```
-credentials: "include"
+```js
+credentials: 'include';
 ```
 
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json",
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body: `n/a`
 -   Response:
 
-```
+```json
 {
-  "message": "First time the company has been chosen. Triggering reviewing company data..."
+	"message": "First time the company has been chosen. Triggering reviewing company data..."
 }
 ```
 
 -   Response Codes:
 
-```
+```js
+
 200 Success
 400 Bad Request
 401 Unauthorized
 404 Not Found
 500 Internal Server Error
+
 ```
 
 ## _GET /:uid/dashboard/:cid_
 
 -   Request Parameters:
 
-```
-uid: "JohnDoe123" (userID)
-cid: "string" (companyID)
+```js
+uid: 'JohnDoe123'(userID);
+cid: 'string'(companyID);
 ```
 
 -   Request Option:
 
-```
-credentials: "include"
+```js
+credentials: 'include';
 ```
 
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json",
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body: `n/a`
 -   Response:
 
-```
+```json
+
 {
-  "message": `Successfully retrieved data from ${companyName}`,
+  "message": "Successfully retrieved data from ${companyName}",
   "data": {
     "personal": {
       "dateOfBirth": "01021990",
@@ -428,119 +441,130 @@ credentials: "include"
     ],
   },
 }
+
 ```
 
 -   Response Codes:
 
-```
+```js
+
 200 Success
 400 Bad Request
 401 Unauthorized
 404 Not Found
 500 Internal Server Error
+
 ```
 
-## _POST /:uid/:cid/edit_
+## _POST /:uid/:cid_
 
 -   Request Parameters:
 
-```
-uid: "JohnDoe123" (userID)
-cid: "string" (companyID)
+```js
+uid: 'JohnDoe123'(userID);
+cid: 'string'(companyID);
 ```
 
 -   Request Option:
 
-```
-credentials: "include"
+```js
+credentials: 'include';
 ```
 
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json",
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body:
 
-```
+```json
 {
-  "password": "HelloWorld",
+	"password": "HelloWorld"
 }
 ```
 
 -   Response:
 
-```
+```json
 {
-  "message": "Password matched! Allowing user to edit info"
+	"message": "Password matched! Allowing user to edit info"
 }
 ```
 
 -   Response Codes:
 
-```
+```js
+
 200 Success
 400 Bad Request
 401 Unauthorized
 404 Not Found
 500 Internal Server Error
+
 ```
 
 ## _PATCH /:uid/:cid/edit_
 
 -   Request Parameters:
 
-```
-uid: "JohnDoe123" (userID)
-cid: "string" (companyID)
+```js
+uid: 'JohnDoe123'(userID);
+cid: 'string'(companyID);
 ```
 
 -   Request Option:
 
-```
-credentials: "include"
+```js
+credentials: 'include';
 ```
 
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json",
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body:
 
-```
+```json
+
 {
-  "fieldThatNeedsToBeChanged": "updatedValue",
-  ...
+"fieldThatNeedsToBeChanged": "updatedValue",
+...
 }
+
 ```
 
 -   Response:
 
-```
+```json
+
 {
-  "message": "Successfully updated data"
+  "message": "Successfully updated data",
   "data": {
     "fieldThatNeedsToBeChanged": "updatedValue",
     ...
   },
 }
+
 ```
 
 -   Response Codes:
 
-```
+```js
+
 200 Success
 400 Bad Request
 401 Unauthorized
 404 Not Found
 500 Internal Server Error
+
 ```
 
 ## _POST /logout_
@@ -548,33 +572,35 @@ credentials: "include"
 -   Request Parameters: `n/a`
 -   Request Option:
 
-```
-credentials: "include"
+```js
+credentials: 'include';
 ```
 
 -   Request Header:
 
-```
+```json
 {
-  "Content-Type": "application/json",
+	"Content-Type": "application/json"
 }
 ```
 
 -   Request Body: `n/a`
 -   Response:
 
-```
+```json
 {
-  "message": "Successfully Logout"
+	"message": "Successfully Logout"
 }
 ```
 
 -   Response Codes:
 
-```
+```js
+
 200 Success
 400 Bad Request
 401 Unauthorized
 404 Not Found
 500 Internal Server Error
+
 ```
