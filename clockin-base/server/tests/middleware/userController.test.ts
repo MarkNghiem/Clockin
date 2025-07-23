@@ -5,10 +5,12 @@ import type { Request, Response } from 'express';
 describe('Testing userController middlewares', () => {
 	beforeAll(() => {
 		vi.restoreAllMocks();
+		vi.resetAllMocks();
 	});
 
 	afterAll(() => {
 		vi.restoreAllMocks();
+		vi.resetAllMocks();
 	});
 
 	describe('verifyInitialIDs middleware.', () => {

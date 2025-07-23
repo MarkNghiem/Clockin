@@ -1,6 +1,9 @@
 import request from 'supertest';
 
+import { supabaseAdmin } from '../../db/db';
+
 import type { Response } from 'supertest';
+import type { Express } from 'express';
 
 const route: string = '/p1/user/signup';
 const initialCredential = {
@@ -29,15 +32,17 @@ const mockHelper = async (mockModule: string, importModule: string) => {
 const reset = (mockModule: string) => {
 	vi.doUnmock(mockModule);
 	vi.resetModules();
-}
+};
 
 describe('Testing Sign Up Integration Routes...', () => {
 	beforeAll(() => {
 		vi.restoreAllMocks();
+		vi.resetAllMocks();
 	});
 
 	afterAll(() => {
 		vi.restoreAllMocks();
+		vi.resetAllMocks();
 	});
 
 	describe('POST /signup', () => {
@@ -110,14 +115,20 @@ describe('Testing Sign Up Integration Routes...', () => {
 			);
 
 			it('Should response with an error when encountered a server error', async () => {
-				let badRes = await mockHelper('../../controller/userController', '../../server');
+				let badRes = await mockHelper(
+					'../../controller/userController',
+					'../../server'
+				);
 
 				expect(badRes.status).toBe(500);
 				expect(badRes.body.error).toMatch('Error');
 
 				reset('../../controller/userController');
 
-				badRes = await mockHelper('../../controller/supabaseController', '../../server'); 
+				badRes = await mockHelper(
+					'../../controller/supabaseController',
+					'../../server'
+				);
 
 				expect(badRes.status).toBe(500);
 				expect(badRes.body.error).toMatch('Error');
@@ -128,22 +139,67 @@ describe('Testing Sign Up Integration Routes...', () => {
 	});
 
 	describe.only('POST /signup/:eid/:cid', () => {
+		const eid = initialCredential.employeeID;
+		const cid = initialCredential.companyID;
+		const reqBody = {
+			firstName: 'John',
+			lastName: 'Doe',
+			userID: 'JohnDoe123',
+			email: 'JohnDoe123@email.com',
+			password: 'HelloWorld789!',
+		};
 		describe('Success Checks', () => {
-			it('Endpoint should have both parameters EID and CID', async () => {
-				
+			let res: Response;
+
+			beforeAll(async () => {
+				const server = await import('../../server');
+				const app = server.app;
+				res = await request(app)
+					.post(`${route}/${eid}/${cid}`)
+					.send(reqBody);
 			});
-			it('Request Body should contain needed info');
-			it('Should create a new user in the database');
-			it(
-				'Should hash the password and store that version in the database'
-			);
-			it('Should response with a 201 status code and a JSON object');
-			it('Success Responded data should only contain a message');
+
+			it('Should response with a 201 status code and a JSON object', () => {
+				expect(res.status).toBe(201);
+				expect(res.type).toMatch(/json/);
+				expect(res.body).toBeDefined();
+			});
+
+			it('Success Responded data should only contain a message', () => {
+				expect(res.body).toHaveProperty('message');
+				expect(res.body.message).toMatch('Successfully');
+				expect(Object.keys(res.body).length).toBe(1);
+			});
 		});
 
 		describe('Failure Checks', () => {
-			it(
-				'Should response with an error if there are not enough data in request body'
+			let badReqBody = [
+				{
+					...reqBody,
+					firstName: null,
+				},
+				{
+					...reqBody,
+					lastName: null,
+				},
+				{
+					...reqBody,
+					userID: null,
+				},
+				{
+					...reqBody,
+					email: null,
+				},
+				{
+					...reqBody,
+					password: null,
+				},
+			];
+
+			it.each(badReqBody)(
+				'Should response with an error if there are not enough data in request body', (badReqBody) => {
+					
+				}
 			);
 			it(
 				'Should response with an error if firstName or lastName contain special characters or numbers'
