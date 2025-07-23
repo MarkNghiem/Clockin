@@ -148,7 +148,6 @@ cid: 'string' (companyID);
 ```js
 201 Created
 400 Bad Request
-404 Not Found
 500 Internal Server Error
 ```
 
