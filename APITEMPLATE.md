@@ -101,6 +101,7 @@ This markdown contains info of API Endpoints of Clockin'
 
 ```js
 200 Success
+401 Unauthorized
 404 Not Found
 500 Internal Server Error
 ```

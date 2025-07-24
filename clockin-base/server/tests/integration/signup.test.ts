@@ -101,7 +101,7 @@ describe('Testing Sign Up Integration Routes...', () => {
 			];
 
 			it.each(badCredentials)(
-				'Should response with an error if employeeID or companyID value is falsy.',
+				'Should response with an error with a 401 status code if employeeID or companyID value is falsy.',
 				async (badCredentials) => {
 					const server = await import('../../server');
 					const app = server.app;
@@ -173,34 +173,44 @@ describe('Testing Sign Up Integration Routes...', () => {
 		});
 
 		describe('Failure Checks', () => {
-			let badReqBody = [
-				{
-					...reqBody,
-					firstName: null,
-				},
-				{
-					...reqBody,
-					lastName: null,
-				},
-				{
-					...reqBody,
-					userID: null,
-				},
-				{
-					...reqBody,
-					email: null,
-				},
-				{
-					...reqBody,
-					password: null,
-				},
+			let app: Express;
+			let badKeys = [
+				'firstName',
+				'lastName',
+				'userID',
+				'email',
+				'password',
 			];
+			let badReqBody: Record<string, string | null>[] = badKeys.map(
+				(badKey) => ({
+					...reqBody,
+					[badKey]: null,
+				})
+			);
+
+			beforeAll(async () => {
+				const server = await import('../../server');
+				app = server.app;
+			});
 
 			it.each(badReqBody)(
-				'Should response with an error if there are not enough data in request body', (badReqBody) => {
-					
+				'Should response with an error with a 400 status code if there are missing data in request body',
+				async (badReqBody) => {
+					const badRes = await request(app)
+						.post(route)
+						.send(badReqBody);
+
+					expect(badRes.status).toBe(400);
+					expect(badRes.body.error).toMatch('Bad Request');
 				}
 			);
+
+			badKeys = ['firstName', 'lastName'];
+			badReqBody = badKeys.map((badKey) => ({
+				...reqBody,
+				[badKey]: null,
+			}));
+
 			it(
 				'Should response with an error if firstName or lastName contain special characters or numbers'
 			);
