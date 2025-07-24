@@ -1,16 +1,15 @@
 import userController from '../../controller/userController';
+import { cleanUpTest } from '../helpers/cleanUps';
 
 import type { Request, Response } from 'express';
 
 describe('Testing userController middlewares', () => {
 	beforeAll(() => {
-		vi.restoreAllMocks();
-		vi.resetAllMocks();
+		cleanUpTest();
 	});
 
 	afterAll(() => {
-		vi.restoreAllMocks();
-		vi.resetAllMocks();
+		cleanUpTest();
 	});
 
 	describe('verifyInitialIDs middleware.', () => {

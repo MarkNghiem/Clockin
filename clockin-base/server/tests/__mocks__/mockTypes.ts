@@ -60,6 +60,7 @@ export interface MockSupabaseAdmin {
 
 	/** 
 	 * Returns a single row.
-	 * Returns an object instead of an array of data */
+	 * Returns an object instead of an array of data 
+	 */
 	single: Mock<() => Promise<VerifyInitialIDsQueryResult>>;
 }

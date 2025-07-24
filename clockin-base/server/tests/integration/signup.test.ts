@@ -1,48 +1,28 @@
 import request from 'supertest';
 
-import { supabaseAdmin } from '../../db/db';
+import {
+	mockBadMiddleware,
+	cleanUpModule,
+	cleanUpTest,
+	makeBadBodyList,
+} from '../helpers';
 
 import type { Response } from 'supertest';
 import type { Express } from 'express';
 
-const route: string = '/p1/user/signup';
-const initialCredential = {
-	employeeID: '7e8e8597-e4af-4d24-bfc8-90c6daa101fe',
-	companyID: '88a9a4db-ec34-4ec2-b907-d5d70a9b7779',
-};
-
-const mockHelper = async (mockModule: string, importModule: string) => {
-	vi.doMock(mockModule, () => ({
-		verifyInitialIDs: vi.fn((_req, _res, next) => {
-			return next({
-				log: '🔴 Error',
-				status: 500,
-				message: {
-					error: '🔴 Error',
-				},
-			});
-		}),
-	}));
-
-	const badServer = await import(importModule);
-	const badApp = badServer.app;
-	return await request(badApp).post(route).send(initialCredential);
-};
-
-const reset = (mockModule: string) => {
-	vi.doUnmock(mockModule);
-	vi.resetModules();
-};
-
 describe('Testing Sign Up Integration Routes...', () => {
+	const route: string = '/p1/user/signup';
+	const initialCredential = {
+		employeeID: '7e8e8597-e4af-4d24-bfc8-90c6daa101fe',
+		companyID: '88a9a4db-ec34-4ec2-b907-d5d70a9b7779',
+	};
+
 	beforeAll(() => {
-		vi.restoreAllMocks();
-		vi.resetAllMocks();
+		cleanUpTest();
 	});
 
 	afterAll(() => {
-		vi.restoreAllMocks();
-		vi.resetAllMocks();
+		cleanUpTest();
 	});
 
 	describe('POST /signup', () => {
@@ -73,32 +53,8 @@ describe('Testing Sign Up Integration Routes...', () => {
 		});
 
 		describe('Failures Checks.', () => {
-			const badCredentials = [
-				{
-					employeeID: null,
-					companyID: '88a9a4db-ec34-4ec2-b907-d5d70a9b7779',
-				},
-				{
-					employeeID: undefined,
-					companyID: '88a9a4db-ec34-4ec2-b907-d5d70a9b7779',
-				},
-				{
-					employeeID: '',
-					companyID: '88a9a4db-ec34-4ec2-b907-d5d70a9b7779',
-				},
-				{
-					employeeID: '7e8e8597-e4af-4d24-bfc8-90c6daa101fe',
-					companyID: null,
-				},
-				{
-					employeeID: '7e8e8597-e4af-4d24-bfc8-90c6daa101fe',
-					companyID: undefined,
-				},
-				{
-					employeeID: '7e8e8597-e4af-4d24-bfc8-90c6daa101fe',
-					companyID: '',
-				},
-			];
+			const keys = Object.keys(initialCredential); 
+			const badCredentials = makeBadBodyList(keys, initialCredential, [null, undefined, '']);
 
 			it.each(badCredentials)(
 				'Should response with an error with a 401 status code if employeeID or companyID value is falsy.',
@@ -115,25 +71,31 @@ describe('Testing Sign Up Integration Routes...', () => {
 			);
 
 			it('Should response with an error when encountered a server error', async () => {
-				let badRes = await mockHelper(
+				let badRes = await mockBadMiddleware(
 					'../../controller/userController',
-					'../../server'
+					'verifyInitialIDs',
+					'../../server',
+					route,
+					initialCredential
 				);
 
 				expect(badRes.status).toBe(500);
 				expect(badRes.body.error).toMatch('Error');
 
-				reset('../../controller/userController');
+				cleanUpModule('../../controller/userController');
 
-				badRes = await mockHelper(
+				badRes = await mockBadMiddleware(
 					'../../controller/supabaseController',
-					'../../server'
+					'verifyInitialIDs',
+					'../../server',
+					route,
+					initialCredential
 				);
 
 				expect(badRes.status).toBe(500);
 				expect(badRes.body.error).toMatch('Error');
 
-				reset('../../controller/supabaseController');
+				cleanUpModule('../../controller/supabaseController');
 			});
 		});
 	});
@@ -174,19 +136,8 @@ describe('Testing Sign Up Integration Routes...', () => {
 
 		describe('Failure Checks', () => {
 			let app: Express;
-			let badKeys = [
-				'firstName',
-				'lastName',
-				'userID',
-				'email',
-				'password',
-			];
-			let badReqBody: Record<string, string | null>[] = badKeys.map(
-				(badKey) => ({
-					...reqBody,
-					[badKey]: null,
-				})
-			);
+			let badKeys = Object.keys(reqBody);
+			let badReqBody = makeBadBodyList(badKeys, reqBody, [null]);
 
 			beforeAll(async () => {
 				const server = await import('../../server');
@@ -205,20 +156,58 @@ describe('Testing Sign Up Integration Routes...', () => {
 				}
 			);
 
-			badKeys = ['firstName', 'lastName'];
-			badReqBody = badKeys.map((badKey) => ({
-				...reqBody,
-				[badKey]: null,
-			}));
+			badKeys = ['firstName'];
+			badReqBody = makeBadBodyList(badKeys, reqBody, ['John!', 'John@', 'John#']);
 
-			it(
-				'Should response with an error if firstName or lastName contain special characters or numbers'
+			it.each(badReqBody)(
+				'Should response with an error if firstName contain special characters or numbers', async (badReqBody) => {
+					const badRes = await request(app).post(route).send(badReqBody);
+
+					expect(badRes.status).toBe(400);
+					expect(badRes.body.error).toMatch('Bad Request');
+				}
 			);
-			it('Should response with an error if email does not contain @');
-			it(
-				'Should Response with an error if password does not contain letters, numbers and special characters'
+
+			badKeys = ['lastName'];
+			badReqBody = makeBadBodyList(badKeys, reqBody, ['Doe!', 'Doe@', 'Doe#']);
+
+			it.each(badReqBody)(
+				'Should response with an error if lastName contain special characters or numbers',
+				async (badReqBody) => {
+					const badRes = await request(app)
+						.post(route)
+						.send(badReqBody);
+
+					expect(badRes.status).toBe(400);
+					expect(badRes.body.error).toMatch('Bad Request');
+				}
 			);
-			it('Should response with an error when encountered a server error');
+
+			badKeys = ['email'];
+			badReqBody = makeBadBodyList(badKeys, reqBody, ['JohnDoe123email.com']);
+
+			it.each(badReqBody)('Should response with an error if email does not contain @', async (badReqBody) => {
+				const badRes = await request(app).post(route).send(badReqBody);
+
+				expect(badRes.status).toBe(400);
+				expect(badRes.body.error).toMatch('Bad Request');
+			});
+
+			badKeys = ['password'];
+			badReqBody = makeBadBodyList(badKeys, reqBody, ['HelloWorld', '123', '!@#.,'])
+			
+			it.each(badReqBody)(
+				'Should Response with an error if password does not contain letters, numbers and special characters', async (badReqBody) => {
+					const badRes = await request(app).post(route).send(badReqBody);
+
+					expect(badRes.status).toBe(400);
+					expect(badRes.body.error).toMatch('Bad Request');
+				}
+			);
+
+			it('Should response with an error when encountered a server error', async() => {
+				// Mock bad modules here, import them then test
+			});
 		});
 	});
 });

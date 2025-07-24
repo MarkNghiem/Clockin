@@ -5,6 +5,7 @@ import {
 	mockBadCredential,
 	error,
 } from '../__mocks__/mocks';
+import { cleanUpTest } from '../helpers/cleanUps';
 
 import type { AuthResponse } from '@supabase/supabase-js';
 import type * as SupabaseType from '@supabase/supabase-js';
@@ -15,7 +16,7 @@ describe('Database Functionalities Tests', () => {
 	let supabase: ReturnType<typeof mockedModule.createClient>;
 
 	beforeAll(async () => {
-		vi.resetAllMocks();
+		cleanUpTest();
 		checked = config.checkData([
 			config.SUPABASE_URL,
 			config.SUPABASE_ANON_KEY,
@@ -40,7 +41,7 @@ describe('Database Functionalities Tests', () => {
 		vi.doUnmock('@supabase/supabase-js');
 		console.log('✅ Module Unmocked.');
 
-		vi.resetAllMocks();
+		cleanUpTest();
 	});
 
 	it('Should create a new client', () => {
