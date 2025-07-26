@@ -53,8 +53,12 @@ describe('Testing Sign Up Integration Routes...', () => {
 		});
 
 		describe('Failures Checks.', () => {
-			const keys = Object.keys(initialCredential); 
-			const badCredentials = makeBadBodyList(keys, initialCredential, [null, undefined, '']);
+			const keys = Object.keys(initialCredential);
+			const badCredentials = makeBadBodyList(keys, initialCredential, [
+				null,
+				undefined,
+				'',
+			]);
 
 			it.each(badCredentials)(
 				'Should response with an error with a 401 status code if employeeID or companyID value is falsy.',
@@ -64,6 +68,8 @@ describe('Testing Sign Up Integration Routes...', () => {
 					const res = await request(app)
 						.post(route)
 						.send(badCredentials);
+
+					console.log('Testing this bad body~~ ', badCredentials);
 
 					expect(res.status).toBe(401);
 					expect(res.body.error).toMatch('Unauthorized');
@@ -150,6 +156,8 @@ describe('Testing Sign Up Integration Routes...', () => {
 					const badRes = await request(app)
 						.post(route)
 						.send(badReqBody);
+					
+					console.log('Testing this bad body~~ ', badReqBody);
 
 					expect(badRes.status).toBe(400);
 					expect(badRes.body.error).toMatch('Bad Request');
@@ -157,11 +165,20 @@ describe('Testing Sign Up Integration Routes...', () => {
 			);
 
 			badKeys = ['firstName'];
-			badReqBody = makeBadBodyList(badKeys, reqBody, ['John!', 'John@', 'John#']);
+			badReqBody = makeBadBodyList(badKeys, reqBody, [
+				'John!',
+				'John@',
+				'John#',
+			]);
 
 			it.each(badReqBody)(
-				'Should response with an error if firstName contain special characters or numbers', async (badReqBody) => {
-					const badRes = await request(app).post(route).send(badReqBody);
+				'Should response with an error if firstName contain special characters or numbers',
+				async (badReqBody) => {
+					const badRes = await request(app)
+						.post(route)
+						.send(badReqBody);
+
+					console.log('Testing this bad body~~ ', badReqBody);
 
 					expect(badRes.status).toBe(400);
 					expect(badRes.body.error).toMatch('Bad Request');
@@ -169,7 +186,11 @@ describe('Testing Sign Up Integration Routes...', () => {
 			);
 
 			badKeys = ['lastName'];
-			badReqBody = makeBadBodyList(badKeys, reqBody, ['Doe!', 'Doe@', 'Doe#']);
+			badReqBody = makeBadBodyList(badKeys, reqBody, [
+				'Doe!',
+				'Doe@',
+				'Doe#',
+			]);
 
 			it.each(badReqBody)(
 				'Should response with an error if lastName contain special characters or numbers',
@@ -178,34 +199,54 @@ describe('Testing Sign Up Integration Routes...', () => {
 						.post(route)
 						.send(badReqBody);
 
+					console.log('Testing this bad body~~ ', badReqBody);
+
 					expect(badRes.status).toBe(400);
 					expect(badRes.body.error).toMatch('Bad Request');
 				}
 			);
 
 			badKeys = ['email'];
-			badReqBody = makeBadBodyList(badKeys, reqBody, ['JohnDoe123email.com']);
+			badReqBody = makeBadBodyList(badKeys, reqBody, [
+				'JohnDoe123email.com',
+			]);
 
-			it.each(badReqBody)('Should response with an error if email does not contain @', async (badReqBody) => {
-				const badRes = await request(app).post(route).send(badReqBody);
-
-				expect(badRes.status).toBe(400);
-				expect(badRes.body.error).toMatch('Bad Request');
-			});
-
-			badKeys = ['password'];
-			badReqBody = makeBadBodyList(badKeys, reqBody, ['HelloWorld', '123', '!@#.,'])
-			
 			it.each(badReqBody)(
-				'Should Response with an error if password does not contain letters, numbers and special characters', async (badReqBody) => {
-					const badRes = await request(app).post(route).send(badReqBody);
+				'Should response with an error if email does not contain @',
+				async (badReqBody) => {
+					const badRes = await request(app)
+						.post(route)
+						.send(badReqBody);
+
+					console.log('Testing this bad body~~ ', badReqBody);
 
 					expect(badRes.status).toBe(400);
 					expect(badRes.body.error).toMatch('Bad Request');
 				}
 			);
 
-			it('Should response with an error when encountered a server error', async() => {
+			badKeys = ['password'];
+			badReqBody = makeBadBodyList(badKeys, reqBody, [
+				'HelloWorld',
+				'123',
+				'!@#.,',
+			]);
+
+			it.each(badReqBody)(
+				'Should Response with an error if password does not contain letters, numbers and special characters',
+				async (badReqBody) => {
+					const badRes = await request(app)
+						.post(route)
+						.send(badReqBody);
+
+					console.log('Testing this bad body~~ ', badReqBody);
+
+					expect(badRes.status).toBe(400);
+					expect(badRes.body.error).toMatch('Bad Request');
+				}
+			);
+
+			it('Should response with an error when encountered a server error', async () => {
 				// Mock bad modules here, import them then test
 			});
 		});

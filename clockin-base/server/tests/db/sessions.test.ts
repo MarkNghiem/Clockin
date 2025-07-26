@@ -5,7 +5,7 @@ import {
 	mockBadCredential,
 	error,
 } from '../__mocks__/mocks';
-import { cleanUpTest } from '../helpers/cleanUps';
+import { cleanUpTest } from '../helpers';
 
 import type { AuthResponse } from '@supabase/supabase-js';
 import type * as SupabaseType from '@supabase/supabase-js';

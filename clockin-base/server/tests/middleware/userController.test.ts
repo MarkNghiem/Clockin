@@ -1,5 +1,5 @@
 import userController from '../../controller/userController';
-import { cleanUpTest } from '../helpers/cleanUps';
+import { cleanUpTest, makeBadReqList } from '../helpers';
 
 import type { Request, Response } from 'express';
 
@@ -21,7 +21,7 @@ describe('Testing userController middlewares', () => {
 		} as unknown as Request;
 		const res = { locals: {} } as unknown as Response;
 		const next = vi.fn();
-		
+
 		it('Should move on to next middleware if everything passes.', async () => {
 			await userController.verifyInitialIDs(req, res, next);
 
@@ -32,49 +32,14 @@ describe('Testing userController middlewares', () => {
 			expect(next).toHaveBeenCalledWith();
 		});
 
-		const badReqs = [
-			{
-				body: {
-					employeeID: null,
-					companyID: '88a9a4db-ec34-4ec2-b907-d5d70a9b7779',
-				},
-			},
-			{
-				body: {
-					employeeID: undefined,
-					companyID: '88a9a4db-ec34-4ec2-b907-d5d70a9b7779',
-				},
-			},
-			{
-				body: {
-					employeeID: '',
-					companyID: '88a9a4db-ec34-4ec2-b907-d5d70a9b7779',
-				},
-			},
-			{
-				body: {
-					employeeID: '7e8e8597-e4af-4d24-bfc8-90c6daa101fe',
-					companyID: null,
-				},
-			},
-			{
-				body: {
-					employeeID: '7e8e8597-e4af-4d24-bfc8-90c6daa101fe',
-					companyID: undefined,
-				},
-			},
-			{
-				body: {
-					employeeID: '7e8e8597-e4af-4d24-bfc8-90c6daa101fe',
-					companyID: '',
-				},
-			},
-		] as unknown as Request[];
+		const bodyKeys = Object.keys(req.body);
+		const badReqs = makeBadReqList(bodyKeys, req.body, [null, undefined, '']);
 
 		it.each(badReqs)(
 			'Should response with a 401 status code when either credential is missing.',
 			async (badReqs) => {
 				await userController.verifyInitialIDs(badReqs, res, next);
+				console.log('Testing this Bad Request~~ ', badReqs);
 
 				expect(next).toHaveBeenCalledWith(
 					expect.objectContaining({
