@@ -31,8 +31,8 @@ export const supabaseAdmin = async () => {
 	try {
 		return await connectDB(checked[0], checked[1]);
 	} catch (error) {
-		throw new Error(`${error}`)
+		throw new Error(`${error}`);
 	}
-}
+};
 
 export default connectDB;

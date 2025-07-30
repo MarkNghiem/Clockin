@@ -1,14 +1,45 @@
 import request from 'supertest';
 
-import {
-	mockBadMiddleware,
-	cleanUpModule,
-	cleanUpTest,
-	makeBadBodyList,
-} from '../helpers';
+import { cleanUpModule, cleanUpTest, makeBadBodyList } from '../helpers';
 
 import type { Response } from 'supertest';
 import type { Express } from 'express';
+
+/**
+ * A helper to mock a bad module and use supertest to send a post request
+ * @param {string} mockModule The module path to mock (Relative path)
+ * @param {string} mockMethodName The method name to mock
+ * @param {string} importModule The module path to import (Relative path)
+ * @param {string} route The route used to send request
+ * @param {string} reqBody Request body
+ * @returns {Promise<request.Response>} A promise of the response object
+ */
+const mockBadMiddleware = async (
+	mockModule: string,
+	mockMethodName: string,
+	importModule: string,
+	route: string,
+	reqBody: Record<string, unknown>
+): Promise<request.Response> => {
+	vi.doMock(mockModule, () => ({
+		default: {
+			[mockMethodName]: vi.fn((_req, _res, next) => {
+				return next({
+					log: '🔴 Error',
+					status: 500,
+					message: {
+						error: '🔴 Error',
+					},
+				});
+			}),
+		},
+	}));
+
+	const server = await import(importModule);
+	const app = server.app;
+
+	return await request(app).post(route).send(reqBody);
+};
 
 describe('Testing Sign Up Integration Routes...', () => {
 	const route: string = '/p1/user/signup';
@@ -77,6 +108,8 @@ describe('Testing Sign Up Integration Routes...', () => {
 			);
 
 			it('Should response with an error when encountered a server error', async () => {
+				vi.resetModules();
+				// mockBadMiddleware lives in '../helpers.ts' so we use relative path from that file
 				let badRes = await mockBadMiddleware(
 					'../../controller/userController',
 					'verifyInitialIDs',
@@ -156,7 +189,7 @@ describe('Testing Sign Up Integration Routes...', () => {
 					const badRes = await request(app)
 						.post(route)
 						.send(badReqBody);
-					
+
 					console.log('Testing this bad body~~ ', badReqBody);
 
 					expect(badRes.status).toBe(400);

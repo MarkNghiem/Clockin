@@ -6,8 +6,14 @@ export interface ErrorObj {
 	message: Record<string, unknown>;
 }
 
-interface UserController {
+export interface UserController {
 	verifyInitialIDs: (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => Promise<void>;
+
+	verifySignUpData: (
 		req: Request,
 		res: Response,
 		next: NextFunction

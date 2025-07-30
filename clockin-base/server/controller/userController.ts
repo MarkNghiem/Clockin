@@ -39,6 +39,56 @@ const userController: UserController = {
 			});
 		}
 	},
+
+	verifySignUpData: async (req, res, next) => {
+		console.log('Running verifySignUpData middleware...');
+		try {
+			const { eid, cid } = req.params;
+			if (!eid || !cid) {
+				return next({
+					log: '🔴 Missing Required Parameters | userController > verifySignUpData.',
+					status: 400,
+					message: {
+						error: '🔴 Bad Request. Missing Required Parameters.',
+					},
+				});
+			}
+
+			const { firstName, lastName, userID, email, password } = req.body;
+			if (!firstName || !lastName || !userID || !email || !password) {
+				return next({
+					log: '🔴 Missing one or multiple Required Field(s) | userController > verifySignUpData.',
+					status: 400,
+					message: {
+						error: '🔴 bad Request. Missing one or multiple Required Field(s).',
+					},
+				});
+			}
+
+			res.locals.data = {
+				eid,
+				cid,
+				firstName,
+				lastName,
+				userID,
+				email,
+				password,
+			};
+
+			console.log(
+				'✅ Successfully verified data. Sending to database...'
+			);
+			return next();
+		} catch (error) {
+			return next({
+				log: `🔴 ${error} | userController > verifySignUpData.`,
+				status: 500,
+				message: {
+					error: '🔴 Internal Server Error. Could not verify received data.',
+				},
+			});
+		}
+	},
 };
 
 export default userController;

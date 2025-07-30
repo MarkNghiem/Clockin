@@ -19,7 +19,7 @@
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
-		"types": ["vitest/globals"]
+		"types": ["vitest/globals"],
 	},
 	"include": ["server/**/*.ts", "server/tests/integration/server.test.ts"],
 	"exclude": ["node_modules", "app/**/*.ts", "dist"],

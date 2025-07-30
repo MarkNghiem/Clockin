@@ -25,4 +25,10 @@ userRouter.post(
 	}
 );
 
+userRouter.post('/signup/:eid/:cid/', userController.verifySignUpData, (_req, res) => {
+	res.status(200).json({
+		message: '✅ Successfully created a new account.',
+	});
+});
+
 export default userRouter;

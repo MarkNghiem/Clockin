@@ -1,44 +1,4 @@
-import request from 'supertest';
-
 import type { Request } from 'express';
-
-//---MOCK BAD MODULE TASK---//
-
-/**
- * A helper to mock a bad module and use supertest to send a post request
- * @param {string} mockModule The module path to mock (Relative path)
- * @param {string} mockMethodName The method name to mock
- * @param {string} importModule The module path to import (Relative path)
- * @param {string} route The route used to send request
- * @param {string} reqBody Request body
- * @returns {Promise<request.Response>} A promise of the response object
- */
-export const mockBadMiddleware = async (
-	mockModule: string,
-	mockMethodName: string,
-	importModule: string,
-	route: string,
-	reqBody: Record<string, unknown>
-): Promise<request.Response> => {
-	vi.doMock(mockModule, () => ({
-		[mockMethodName]: vi.fn((_req, _res, next) => {
-			return next({
-				log: '🔴 Error',
-				status: 500,
-				message: {
-					error: '🔴 Error',
-				},
-			});
-		}),
-	}));
-
-	const server = await import(importModule);
-	const app = server.app;
-
-	return await request(app).post(route).send(reqBody);
-};
-
-//---//
 
 //---CLEAN UP TASKS---//
 
@@ -104,7 +64,7 @@ export const makeBadBodyList = (
 
 /**
  * A helper to create a list of bad request object. This function use makeBadBodyList to create preliminary request bodies then later transform them to request objects. Returns a list of request objects. ONLY USE THIS FUNCTION FOR TESTING MULTIPLE TEST CASES WITH each().
- * @param {string[]} keys A list of keys to change their values 
+ * @param {string[]} keys A list of keys to change their values
  * @param {Record<string, unknown>} bodyObject The original request object
  * @param {unknown[]} values A list of new values to assign to a key
  * @returns {Request[]} An array of new request objects or an error message in the same format (Array of an object containing an error message)
