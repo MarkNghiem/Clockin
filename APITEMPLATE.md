@@ -132,7 +132,7 @@ cid: 'string' (companyID);
 	"lastName": "Doe",
 	"userID": "JohnDoe123",
 	"email": "JohnDoe123@email.com",
-	"password": "HelloWorld789!"
+	"password": "HelloWorld6789!@"
 }
 ```
 

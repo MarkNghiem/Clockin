@@ -92,7 +92,7 @@ describe('Testing userController middlewares', () => {
 				lastName: 'Doe',
 				userID: 'JohnDoe123',
 				email: 'JohnDoe123@gmail.com',
-				password: 'HelloWorld789!',
+				password: 'HelloWorld6789!@',
 			},
 			params: {
 				eid: '7e8e8597-e4af-4d24-bfc8-90c6daa101fe',
@@ -170,10 +170,41 @@ describe('Testing userController middlewares', () => {
 			}
 		);
 
+		badReqs = makeBadReqList(['firstName, lastName'], req.body, [
+			'John ',
+			' John',
+			'J o h n',
+			'John1',
+			'1John',
+			'J0hn',
+			'John!',
+			'@John',
+			'J@hn',
+		]);
+
+		it.each(badReqs)(
+			'Should response with a 400 status code and a corresponding message when firstName or lastName contains whitespaces, numbers or special characters',
+			async (badReqs) => {
+				await userController.verifySignUpData(badReqs, res, next);
+				console.log('Testing this bad request~~ ', badReqs);
+
+				expect(next).toHaveBeenCalledWith(
+					expect.objectContaining({
+						log: expect.stringContaining('invalid character'),
+						status: 400,
+						message: expect.objectContaining({
+							error: expect.stringContaining('Bad Request'),
+						}),
+					})
+				);
+			}
+		);
+
 		badReqs = makeBadReqList(['emails'], req.body, [
 			'JohnDoe123email.com',
 			'JohnDoe123@emailcom',
 			'JohnDoe123emailcom',
+			'John Doe 123 @ gmail . com',
 		]);
 
 		it.each(badReqs)(
@@ -199,10 +230,11 @@ describe('Testing userController middlewares', () => {
 			'HELLOWORLD789!',
 			'HelloWorld!',
 			'HelloWorld789',
+			'Hello World 789 !',
 		]);
 
 		it.each(badReqs)(
-			'Should response with a 400 status code and a corresponding messsage when password does not contain all of the following: Uppercase letter, Lowercase letter, Numbers, At least 1 special character',
+			'Should response with a 400 status code and a corresponding messsage when password does not contain all of the following: At least 16 characters, Uppercase letter, Lowercase letter, Numbers, At least 1 Special Character or Containing Whitespaces',
 			async (badReqs) => {
 				await userController.verifySignUpData(badReqs, res, next);
 				console.log('Testing this bad request~~ ', badReqs);
