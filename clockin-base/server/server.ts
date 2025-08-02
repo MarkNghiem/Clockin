@@ -58,7 +58,7 @@ app.use((err: ErrorObj, _req: Request, res: Response, _next: NextFunction) => {
 // Gracefully shutting down
 let isShuttingDown = false;
 
-export const gracefullyShutDown = async () => {
+const gracefullyShutDown = async () => {
 	if (isShuttingDown) return;
 	isShuttingDown = true;
 

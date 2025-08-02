@@ -6,14 +6,15 @@
 import { supabaseAdmin } from '../db/db';
 import { PostgrestError } from '@supabase/supabase-js';
 
-import type { SupabaseController } from '../types/types';
+import type { InitialIDsBody, SupabaseController } from '../types/types';
 
 const supabaseController: SupabaseController = {
 	verifyInitialIDs: async (_req, res, next) => {
 		console.log('🔵 Runnning Supabase verifyInitialIDs middleware...');
 		try {
 			const databaseAdmin = await supabaseAdmin();
-			const { employeeID, companyID } = res.locals.credentials;
+			const { employeeID, companyID } = res.locals
+				.credentials as InitialIDsBody;
 			let data: { companies: { company_name: string } | null } | null,
 				error: PostgrestError | null;
 			if (process.env.NODE_ENV === 'test') {

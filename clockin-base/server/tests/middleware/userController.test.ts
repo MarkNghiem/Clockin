@@ -4,13 +4,8 @@ import { cleanUpTest, makeBadReqList } from '../helpers';
 import type { Request, Response } from 'express';
 
 describe('Testing userController middlewares', () => {
-	beforeAll(() => {
-		cleanUpTest();
-	});
-
-	afterAll(() => {
-		cleanUpTest();
-	});
+	beforeAll(() => cleanUpTest());
+	afterAll(() => cleanUpTest());
 
 	describe('verifyInitialIDs middleware.', () => {
 		const req = {

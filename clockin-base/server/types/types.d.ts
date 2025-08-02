@@ -18,13 +18,12 @@ export interface DataTypeController {
 	}) => (req: Request, res: Response, next: NextFunction) => Promise<void>;
 }
 
-/** Type for Request Body when sending in Initial IDs */
-const InitialIDsBody = z.object({
+const InitialIDsBodySchema = z.object({
 	employeeID: z.uuidv4(),
 	companyID: z.uuidv4(),
 });
 
-type InitialIDsBody = z.infer<typeof InitialIDsBody>;
+type InitialIDsBody = z.infer<typeof InitialIDsBodySchema>;
 
 /** Type for userController. */
 export interface UserController {

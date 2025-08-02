@@ -18,8 +18,8 @@ const connectDB = async (url: string, key: string) => {
 
 		await newClient.from('users').select('*');
 		console.log('✅ Successfully Connected to the Database.');
-		if (key === checked[1]) console.log('Role: Admin');
-		else console.log('Role: User');
+		if (key === checked[1]) console.log('🛠️ Database Role: Admin');
+		else console.log('👨‍💼 Database Role: User');
 		return newClient;
 	} catch (error) {
 		console.error(`🔴 Unable to connect to the database: $${error}.`);
