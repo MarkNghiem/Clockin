@@ -1,6 +1,25 @@
+import { checkDataExistence } from '../helpers';
+
 import type { UserController } from '../types/types';
 
-const userController: UserController = {
+const checkRequestController: UserController = {
+	verifyExistence: async (req, res, next) => {
+		console.log('Running verifyExistence middleware...');
+		try {
+			if (req.query) {
+				const result = checkDataExistence(req.query);
+
+				if (result.isMissing) {
+					return next({
+						log: `${result.message}: ${result.data} | checkRequestController > verifyExistence.`,
+						status: 400,
+						message: `${result.message}`,
+					});
+				}
+			}
+		} catch (error) {}
+	},
+
 	verifyInitialIDs: async (req, res, next) => {
 		console.log('🔵 Running verifyInitialIDs middleware...');
 		try {
@@ -153,4 +172,4 @@ const userController: UserController = {
 	},
 };
 
-export default userController;
+export default checkRequestController;
