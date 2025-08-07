@@ -28,22 +28,29 @@ type InitialIDsBody = z.infer<typeof InitialIDsBodySchema>;
 /** Type for userController. */
 export interface UserController {
 	/** Check existences and formats of received Initial IDs. */
-	verifyInitialIDs: (
-		req: Request<
-			Record<string, unknown>,
-			Record<string, unknown>,
-			InitialIDsBody
-		>,
-		res: Response,
-		next: NextFunction
-	) => Promise<void>;
+	verifyExistence: (req: Request, res: Response, next: NextFunction) => void;
+	/** Validate Data at compiling and runtime */
+	validateType: (schema: {
+		query?: z.ZodObject;
+		params?: z.ZodObject;
+		body?: z.ZodObject;
+	}) => (req: Request, res: Response, next: NextFunction) => void;
+	// verifyInitialIDs: (
+	// 	req: Request<
+	// 		Record<string, unknown>,
+	// 		Record<string, unknown>,
+	// 		InitialIDsBody
+	// 	>,
+	// 	res: Response,
+	// 	next: NextFunction
+	// ) => Promise<void>;
 
-	/** Check existences and format of received sign up data. */
-	verifySignUpData: (
-		req: Request,
-		res: Response,
-		next: NextFunction
-	) => Promise<void>;
+	// /** Check existences and format of received sign up data. */
+	// verifySignUpData: (
+	// 	req: Request,
+	// 	res: Response,
+	// 	next: NextFunction
+	// ) => Promise<void>;
 }
 
 /** Type for supabaseController. */
