@@ -8,27 +8,10 @@ export interface ErrorObj {
 	message: Record<string, unknown>;
 }
 
-/** Type for dataTypeController */
-export interface DataTypeController {
-	/** Validate Data at compiling and runtime */
-	validateType: (schema: {
-		query?: z.ZodObject;
-		params?: z.ZodObject;
-		body?: z.ZodObject;
-	}) => (req: Request, res: Response, next: NextFunction) => Promise<void>;
-}
-
-const InitialIDsBodySchema = z.object({
-	employeeID: z.uuidv4(),
-	companyID: z.uuidv4(),
-});
-
-type InitialIDsBody = z.infer<typeof InitialIDsBodySchema>;
-
 /** Type for userController. */
-export interface UserController {
+export interface CheckRequestController {
 	/** Check existences and formats of received Initial IDs. */
-	verifyExistence: (req: Request, res: Response, next: NextFunction) => void;
+	validateExistence: (req: Request, res: Response, next: NextFunction) => void;
 	/** Validate Data at compiling and runtime */
 	validateType: (schema: {
 		query?: z.ZodObject;

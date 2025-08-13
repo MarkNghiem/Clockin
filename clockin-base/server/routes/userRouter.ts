@@ -7,21 +7,17 @@
 import express from 'express';
 import * as z from 'zod';
 
-import dataTypeController from '../controller/dataTypeController';
-import userController from '../controller/userController';
+import checkRequestController from '../controller/userController';
 import supabaseController from '../controller/supabaseController';
 
 const userRouter = express.Router();
 
 userRouter.post(
 	'/signup',
-	dataTypeController.validateType({
-		body: z.object({
-			employeeID: z.uuidv4(),
-			companyID: z.uuidv4(),
-		}),
+	checkRequestController.validateExistence,
+	checkRequestController.validateType({
+		body: z.object({ employeeID: z.uuidv4(), companyID: z.uuidv4() }),
 	}),
-	userController.verifyInitialIDs,
 	supabaseController.verifyInitialIDs,
 	(_req, res) => {
 		res.status(200).json({
@@ -35,7 +31,8 @@ userRouter.post(
 
 userRouter.post(
 	'/signup/:eid/:cid/',
-	dataTypeController.validateType({
+	checkRequestController.validateExistence,
+	checkRequestController.validateType({
 		params: z.object({
 			eid: z.uuidv4(),
 			cid: z.uuidv4(),
@@ -48,7 +45,6 @@ userRouter.post(
 			password: z.string(),
 		}),
 	}),
-	userController.verifySignUpData,
 	(_req, res) => {
 		res.status(200).json({
 			message: '✅ Successfully created a new account.',

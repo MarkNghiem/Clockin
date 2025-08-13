@@ -3,11 +3,11 @@ import * as z from 'zod';
 import checkDataExistence from '../helpers/checkDataExistence';
 
 import type { Report } from '../helpers/checkDataExistence';
-import type { UserController } from '../types/types';
+import type { CheckRequestController } from '../types/types';
 
-const checkRequestController: UserController = {
+const checkRequestController: CheckRequestController = {
 	// Checking received Request data's existence
-	verifyExistence: (req, _res, next) => {
+	validateExistence: (req, _res, next) => {
 		console.log('🔵 Running verifyExistence middleware...');
 		try {
 			const result: Record<string, Report> = {
@@ -27,7 +27,7 @@ const checkRequestController: UserController = {
 					if (result[key].isMissing) {
 						return next({
 							log: `${result[key].message} at ${key} | checkRequestController > verifyExistence.`,
-							status: 400,
+							status: 404,
 							message: `${result[key].message}`,
 						});
 						// Otherwise, log a success message to the console then move on to the next key
@@ -47,105 +47,55 @@ const checkRequestController: UserController = {
 	},
 
 	validateType: (schema) => {
-		return (req, res, next) => {
+		return (req, _res, next) => {
 			console.log(
 				'🔵 Validating Received Data using Inputted Schemas...'
 			);
 			try {
+				// Declared keys here for type compatibility when iterating through schemas
 				const keys = ['query', 'params', 'body'] as const;
+				// Loop through schema Object
 				for (const key of keys) {
-					if (schema[key]) {
-						const validatedData = schema[key].safeParse(req[key]);
-						if (!validatedData.success) {
-							return next({
-								log: `
-										🔴 Invalid Type from ${key}:\n
-										${z.treeifyError(validatedData.error)}.\n
-										| checkRequestController > verifyExistence.
-									`,
-								status: 400,
-								message:
-									'🔴 TypeError - Please check your input or contact an administrator.',
-							});
-						}
+					// If schema is not provided, skip to the next schema
+					if (!schema[key]) {
+						console.log(`🔵 No ${key} Provided.`);
+						continue;
+					}
+
+					// Parse Request data with provided schema
+					const validatedData = schema[key].safeParse(req[key]);
+					// If the type does not match, send a response with a 400 status code and a message
+					if (!validatedData.success) {
+						return next({
+							log: `
+									🔴 Invalid Type from ${key}:\n
+									${z.treeifyError(validatedData.error)}.\n
+									| checkRequestController > verifyExistence.
+								`,
+							status: 400,
+							message:
+								'🔴 TypeError - Please check your input or contact an administrator.',
+						});
 					}
 				}
 
-				// if (schema.query) {
-				// 	const validatedQuery = schema.query.safeParse(req.query);
-				// 	if (!validatedQuery.success) {
-				// 		return next({
-				// 			log: `
-				// 					🔴 Invalid Type from Request Query:\n
-				// 					${z.treeifyError(validatedQuery.error)}.\n 
-				// 					| dataTypeController > validateType.
-				// 				`,
-				// 			status: 400,
-				// 			message: {
-				// 				error: '🔴 TypeError: Please check your input or contact an administrator.',
-				// 			},
-				// 		});
-				// 	}
-
-				// 	console.log('✅ Verified Query.');
-				// 	res.locals.validatedQuery = validatedQuery;
-				// 	return next();
-				// }
-
-				// if (schema.params) {
-				// 	const validatedParams = schema.params.safeParse(req.params);
-				// 	if (!validatedParams.success) {
-				// 		return next({
-				// 			log: `
-				// 					🔴 Invalid Type from Request Parameters:\n
-				// 					${z.treeifyError(validatedParams.error)}.\n
-				// 					| dataTypeController > validateType.
-				// 				`,
-				// 			status: 400,
-				// 			message: {
-				// 				error: '🔴 TypeError: Please check your input or contact an administrator.',
-				// 			},
-				// 		});
-				// 	}
-
-				// 	console.log('✅ Verified Parameters.');
-				// 	res.locals.validatedParams = validatedParams;
-				// 	return next();
-				// }
-
-				// if (schema.body) {
-				// 	const validatedBody = schema.body.safeParse(req.body);
-				// 	if (!validatedBody.success) {
-				// 		return next({
-				// 			log: `
-				// 					🔴 Invalid Type from Request Query:\n
-				// 					${z.treeifyError(validatedBody.error)}.\n
-				// 					| dataTypeController > validateType.
-				// 				`,
-				// 			status: 400,
-				// 			message: {
-				// 				error: '🔴 TypeError: Please check your input or contact an administrator.',
-				// 			},
-				// 		});
-				// 	}
-
-				// 	console.log('✅ Verified Body.');
-				// 	res.locals.validatedBody = validatedBody;
-				// 	return next();
-				// }
-
+				// If 0 schema are provided, send a response with a 500 status code
+				// By default, schemas should be provided in the route by the devs
+				// If this block runs, check the route to see if you have provided a schema
 				if (!Object.keys(schema).length) {
 					return next({
-						log: '🔴 No Query, Params or Body found in the Request | dataTypeController > validateType.',
-						status: 400,
-						message: '🔴 No Data found in user Request.',
+						log: '🔴 No Schema Found | dataTypeController > validateType.',
+						status: 500,
+						message:
+							'🔴 Internal Server Error. Please contact Administrator.',
 					});
 				}
 			} catch (error) {
 				return next({
 					log: `🔴 ${error} | dataTypeController > validateType.`,
 					status: 500,
-					message: '🔴 Internal Server Error',
+					message:
+						'🔴 Internal Server Error. Please contact Administrator',
 				});
 			}
 		};
