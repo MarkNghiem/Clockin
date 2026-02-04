@@ -7,7 +7,7 @@
 import express from 'express';
 import * as z from 'zod';
 
-import checkRequestController from '../controller/userController';
+import checkRequestController from '../controller/checkRequestController';
 import supabaseController from '../controller/supabaseController';
 
 const userRouter = express.Router();
@@ -26,7 +26,7 @@ userRouter.post(
 				companyName: res.locals.data.companies.company_name,
 			},
 		});
-	}
+	},
 );
 
 userRouter.post(
@@ -49,7 +49,7 @@ userRouter.post(
 		res.status(200).json({
 			message: '✅ Successfully created a new account.',
 		});
-	}
+	},
 );
 
 export default userRouter;

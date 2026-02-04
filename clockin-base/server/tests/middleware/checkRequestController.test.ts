@@ -1,4 +1,4 @@
-import checkRequestController from '../../controller/userController';
+import checkRequestController from '../../controller/checkRequestController';
 import { cleanUpTest, makeReqList } from '../helpers';
 
 import type { Request, Response } from 'express';
@@ -46,9 +46,9 @@ describe('Testing checkRequestController middlewares', () => {
 						message: expect.objectContaining({
 							error: expect.stringContaining('Missing'),
 						}),
-					})
+					}),
 				);
-			}
+			},
 		);
 
 		it('Should response with a 500 status code if the middleware failed.', () => {
@@ -67,7 +67,7 @@ describe('Testing checkRequestController middlewares', () => {
 					message: expect.objectContaining({
 						error: expect.stringContaining('Internal Server Error'),
 					}),
-				})
+				}),
 			);
 		});
 	});
