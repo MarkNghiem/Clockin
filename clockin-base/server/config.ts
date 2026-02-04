@@ -18,11 +18,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// Database config
-
 // Port config
 export const PORT = 3000;
 
+// Dir config
 const currentFile = fileURLToPath(import.meta.url);
 export const currentDir = dirname(currentFile);
 

@@ -33,11 +33,12 @@ app.use(express.static(path.resolve(currentDir, '../src/')));
 // Use Routers
 app.use('/p1/user', userRouter);
 
-// Default endpoints
+// Default endpoint
 app.get('/p1', (_req, res) => {
 	res.status(200).sendFile(path.resolve(currentDir, '../index.html'));
 });
 
+// Unknown endpoints
 app.use((_req, res) => {
 	res.status(404).json('This is not the page you are looking for');
 });
