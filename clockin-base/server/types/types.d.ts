@@ -8,8 +8,10 @@ export interface ErrorObj {
 	message: Record<string, unknown>;
 }
 
-/** Type for userController. */
+/** Type for checkRequestController. */
 export interface CheckRequestController {
+	/** Check if the request has the correct headers. Usually Content-Type: application/json. */
+	validateHeader: (req: Request, res: Response, next: NextFunction) => void;
 	/** Check existences and formats of received Initial IDs. */
 	validateExistence: (req: Request, res: Response, next: NextFunction) => void;
 	/** Validate Data at compiling and runtime */
@@ -18,22 +20,6 @@ export interface CheckRequestController {
 		params?: z.ZodObject;
 		body?: z.ZodObject;
 	}) => (req: Request, res: Response, next: NextFunction) => void;
-	// verifyInitialIDs: (
-	// 	req: Request<
-	// 		Record<string, unknown>,
-	// 		Record<string, unknown>,
-	// 		InitialIDsBody
-	// 	>,
-	// 	res: Response,
-	// 	next: NextFunction
-	// ) => Promise<void>;
-
-	// /** Check existences and format of received sign up data. */
-	// verifySignUpData: (
-	// 	req: Request,
-	// 	res: Response,
-	// 	next: NextFunction
-	// ) => Promise<void>;
 }
 
 /** Type for supabaseController. */

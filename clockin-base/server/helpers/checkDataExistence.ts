@@ -33,7 +33,7 @@ const checkDataExistence = (
 
 	// This one will be used if there are bad data
 	const badData: Record<string, unknown> = {};
-	// This one will be used if all data passed the check. Won't be return if there are a bad data
+	// This one will be used if all data passed the check. Won't be returned if there are a bad data
 	const verified: Record<string, unknown> = {};
 	// True if there are any bad data
 	let isMissing: boolean = false;
@@ -53,7 +53,7 @@ const checkDataExistence = (
 	// If isMissing is true then return the Report with bad data
 	if (isMissing)
 		return {
-			message: '🔴 Detected Missing Data.',
+			message: '🔴 Detected Missing Data',
 			data: badData,
 			originalCount: Object.keys(data).length,
 			count: Object.keys(badData).length,

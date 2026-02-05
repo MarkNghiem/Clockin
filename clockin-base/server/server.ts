@@ -48,7 +48,10 @@ app.use((err: ErrorObj, _req: Request, res: Response, _next: NextFunction) => {
 	const defaultErr = {
 		log: '🔴 Unknown middleware error. | Global',
 		status: 500,
-		message: { error: '🔴 An unknown error occurred.' },
+		message: {
+			error: 'INTERNAL_SERVER_ERROR',
+			message: '🔴 An unknown error occurred.',
+		},
 	};
 
 	const errorObj = Object.assign({}, defaultErr, err);
@@ -65,7 +68,7 @@ const gracefullyShutDown = async () => {
 
 	try {
 		console.log(
-			'🔵 Shut down signal received. Gracefully shutting down...'
+			'🔵 Shut down signal received. Gracefully shutting down...',
 		);
 		await new Promise<void>((resolve, reject) => {
 			server.close((err) => {
